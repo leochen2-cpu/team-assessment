@@ -216,13 +216,9 @@ This project is licensed under the MIT License.
 
 ## 👥 Authors
 
-Your Team Name
+Leo Chen
 
 ## 🙏 Acknowledgments
 
 - Based on the Gottman Method for relationship assessment
 - Inspired by team dynamics research
-
-## 📞 Support
-
-For questions or issues, please open an issue on GitHub or contact [your-email@example.com]
