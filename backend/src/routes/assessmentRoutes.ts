@@ -1,4 +1,5 @@
 import express from 'express';
+import { PrismaClient } from '@prisma/client';
 import {
   calculateDimensionScores,
   calculatePersonalScore,
@@ -10,19 +11,110 @@ import {
 } from '../services/scoreCalculation';
 
 const router = express.Router();
+const prisma = new PrismaClient();
 
 /**
- * POST /api/assessments/calculate
- * 计算个人评估分数
+ * GET /api/assessments/validate/:code
+ * 验证 unique code 是否有效
  */
-router.post('/calculate', (req, res) => {
+router.get('/validate/:code', async (req, res) => {
   try {
-    const responses: AssessmentResponses = req.body.responses;
+    const { code } = req.params;
+
+    // 查找code
+    const participantCode = await prisma.participantCode.findUnique({
+      where: { code },
+      include: {
+        assessment: {
+          select: {
+            teamName: true,
+            status: true,
+          },
+        },
+      },
+    });
+
+    if (!participantCode) {
+      return res.status(404).json({
+        valid: false,
+        error: 'Invalid code',
+      });
+    }
+
+    // 检查评估是否还激活
+    if (participantCode.assessment.status !== 'ACTIVE') {
+      return res.status(400).json({
+        valid: false,
+        error: 'This assessment is no longer active',
+      });
+    }
+
+    // 检查code是否已经被使用
+    if (participantCode.isUsed) {
+      return res.json({
+        valid: true,
+        alreadyUsed: true,
+        message: 'This code has already been used',
+      });
+    }
+
+    res.json({
+      valid: true,
+      alreadyUsed: false,
+      assessment: {
+        teamName: participantCode.assessment.teamName,
+      },
+    });
+  } catch (error: any) {
+    console.error('Validate code error:', error);
+    res.status(500).json({
+      valid: false,
+      error: 'Failed to validate code',
+      details: error.message,
+    });
+  }
+});
+
+/**
+ * POST /api/assessments/:code/submit
+ * 提交评估响应
+ */
+router.post('/:code/submit', async (req, res) => {
+  try {
+    const { code } = req.params;
+    const { participantName, participantEmail, responses } = req.body;
 
     // 验证输入
-    if (!responses || typeof responses !== 'object') {
+    if (!participantName || !participantEmail || !responses) {
       return res.status(400).json({
-        error: '请提供有效的问卷答案',
+        error: 'participantName, participantEmail, and responses are required',
+      });
+    }
+
+    // 查找code
+    const participantCode = await prisma.participantCode.findUnique({
+      where: { code },
+      include: {
+        assessment: true,
+      },
+    });
+
+    if (!participantCode) {
+      return res.status(404).json({
+        error: 'Invalid code',
+      });
+    }
+
+    if (participantCode.assessment.status !== 'ACTIVE') {
+      return res.status(400).json({
+        error: 'This assessment is no longer active',
+      });
+    }
+
+    // 检查code是否已经被使用
+    if (participantCode.isUsed) {
+      return res.status(400).json({
+        error: 'This code has already been used',
       });
     }
 
@@ -37,17 +129,8 @@ router.post('/calculate', (req, res) => {
 
     if (missingQuestions.length > 0) {
       return res.status(400).json({
-        error: `缺少以下题目的答案: ${missingQuestions.join(', ')}`,
+        error: `Missing answers for: ${missingQuestions.join(', ')}`,
       });
-    }
-
-    // 验证答案范围（1-5）
-    for (const [qId, value] of Object.entries(responses)) {
-      if (value < 1 || value > 5) {
-        return res.status(400).json({
-          error: `${qId} 的答案必须在1-5之间`,
-        });
-      }
     }
 
     // 计算分数
@@ -58,39 +141,39 @@ router.post('/calculate', (req, res) => {
     const growthAreas = identifyGrowthAreas(dimensionScores);
     const recommendations = generateRecommendations(dimensionScores);
 
-    // 返回完整结果
-    res.json({
-      success: true,
-      result: {
-        personalScore,
-        grade,
-        dimensionScores,
-        strengths,
-        growthAreas,
-        recommendations,
-        calculatedAt: new Date().toISOString(),
+    const scoresData = {
+      dimensionScores,
+      personalScore,
+      grade,
+      strengths,
+      growthAreas,
+      recommendations,
+    };
+
+    // 更新code记录
+    await prisma.participantCode.update({
+      where: { code },
+      data: {
+        isUsed: true,
+        name: participantName,
+        email: participantEmail,
+        responses: JSON.stringify(responses),
+        scores: JSON.stringify(scoresData),
+        submittedAt: new Date(),
       },
     });
+
+    res.json({
+      success: true,
+      message: 'Assessment submitted successfully',
+    });
   } catch (error: any) {
-    console.error('评估计算错误:', error);
+    console.error('Submit assessment error:', error);
     res.status(500).json({
-      error: '计算评估分数时出错',
+      error: 'Failed to submit assessment',
       details: error.message,
     });
   }
-});
-
-/**
- * GET /api/assessments/test
- * 测试路由
- */
-router.get('/test', (req, res) => {
-  res.json({
-    message: '评估API正常工作！',
-    availableEndpoints: [
-      'POST /api/assessments/calculate - 计算评估分数',
-    ],
-  });
 });
 
 export default router;

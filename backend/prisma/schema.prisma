@@ -1,7 +1,7 @@
-// Prisma Schema - 数据库设计
+// Prisma Schema - Unique Code 系统
 
 datasource db {
-  provider = "sqlite"  // 使用SQLite，无需安装PostgreSQL，适合快速开始
+  provider = "sqlite"
   url      = "file:./dev.db"
 }
 
@@ -9,98 +9,54 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// 用户表
-model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  passwordHash  String
-  firstName     String
-  lastName      String
-  role          String   @default("MEMBER")  // MEMBER, TEAM_LEAD, ADMIN
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  teamMemberships TeamMember[]
-  assessments     Assessment[]
-  accessLogs      AccessLog[]
-  
-  @@map("users")
-}
-
-// 团队表
-model Team {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  members     TeamMember[]
-  assessments Assessment[]
-  reports     TeamReport[]
-  
-  @@map("teams")
-}
-
-// 团队成员关系表
-model TeamMember {
-  id        String   @id @default(uuid())
-  userId    String
-  teamId    String
-  role      String   @default("MEMBER")  // MEMBER, LEAD
-  joinedAt  DateTime @default(now())
-  
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  
-  @@unique([userId, teamId])
-  @@map("team_members")
-}
-
-// 评估记录表
+// 评估活动表（管理员创建）
 model Assessment {
-  id          String   @id @default(uuid())
-  userId      String
-  teamId      String
-  responses   String   // JSON字符串: {"Q1": 4, "Q2": 5, ...}
-  scores      String   // JSON字符串: {"dimensions": {...}, "total": 72.5}
-  completedAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  teamName     String
+  memberCount  Int      // 成员数量
+  createdBy    String   // 管理员用户名
+  createdAt    DateTime @default(now())
+  status       String   @default("ACTIVE")  // ACTIVE, COMPLETED
   
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  codes        ParticipantCode[]
+  teamReport   TeamReport?
   
   @@map("assessments")
 }
 
-// 团队报告表
+// 参与者代码表（每个人一个unique code）
+model ParticipantCode {
+  id           String   @id @default(uuid())
+  code         String   @unique  // 8位随机码
+  assessmentId String
+  isUsed       Boolean  @default(false)
+  name         String?  // 参与者姓名（提交后填写）
+  email        String?  // 参与者邮箱（提交后填写）
+  responses    String?  // JSON: {"Q1": 4, "Q2": 5, ...}
+  scores       String?  // JSON: {dimensions, personalScore, grade}
+  submittedAt  DateTime?
+  emailSent    Boolean  @default(false)
+  emailSentAt  DateTime?
+  
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  
+  @@map("participant_codes")
+}
+
+// 团队报告表（所有人提交后生成）
 model TeamReport {
   id                String   @id @default(uuid())
-  teamId            String
-  assessmentCycle   String   // 例如 "2025-Q4"
+  assessmentId      String   @unique
   teamScore         Float
   baseScore         Float
   consistencyFactor Float
   penaltyFactor     Float
-  dimensionScores   String   // JSON字符串
-  participationRate Float
+  standardDeviation Float
+  dimensionScores   String   // JSON: {teamConnection: 75, ...}
+  participationCount Int
   generatedAt       DateTime @default(now())
   
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   
   @@map("team_reports")
-}
-
-// 访问日志表（隐私审计）
-model AccessLog {
-  id           String   @id @default(uuid())
-  userId       String
-  resourceType String   // "personal_report", "team_report"
-  resourceId   String
-  action       String   // "view", "export"
-  ipAddress    String?
-  timestamp    DateTime @default(now())
-  
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@map("access_logs")
 }
