@@ -1,0 +1,278 @@
+/* Submission Success Styles - Optimized Layout */
+
+.success-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.success-card {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  max-width: 650px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Success Icon */
+.success-icon-large {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: white;
+  font-weight: bold;
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Title & Subtitle */
+.success-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.75rem;
+}
+
+.success-subtitle {
+  font-size: 1.0625rem;
+  color: #6b7280;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+/* Content Sections */
+.success-content {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.info-section {
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border-left: 4px solid #3b82f6;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.section-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.section-header h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.section-content {
+  padding-left: 2.25rem;
+}
+
+.section-text {
+  font-size: 0.9375rem;
+  color: #374151;
+  line-height: 1.6;
+  margin: 0.5rem 0;
+}
+
+.section-text:first-child {
+  margin-top: 0;
+}
+
+.section-text:last-child {
+  margin-bottom: 0;
+}
+
+/* Email Display */
+.email-display {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #3b82f6;
+  font-family: 'Courier New', monospace;
+  background: white;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 2px solid #dbeafe;
+  margin: 0;
+}
+
+/* Report Features List */
+.report-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.report-features li {
+  font-size: 0.9375rem;
+  color: #374151;
+  padding: 0.5rem 0;
+  padding-left: 1.75rem;
+  position: relative;
+  line-height: 1.6;
+}
+
+.report-features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #10b981;
+  font-weight: bold;
+  font-size: 1.125rem;
+}
+
+/* Timeline Box */
+.timeline-box {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  border-left: 4px solid #f59e0b;
+}
+
+.timeline-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.timeline-content h4 {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #92400e;
+  margin: 0 0 0.5rem 0;
+}
+
+.timeline-content p {
+  font-size: 0.9375rem;
+  color: #78350f;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Footer */
+.success-footer {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 2px solid #f3f4f6;
+  text-align: center;
+}
+
+.footer-note {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border-radius: 0.75rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+  font-size: 0.875rem;
+  color: #065f46;
+  line-height: 1.6;
+}
+
+.lock-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.footer-note strong {
+  color: #047857;
+  font-weight: 700;
+}
+
+.closing-message {
+  font-size: 0.9375rem;
+  color: #3b82f6;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .success-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .success-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .success-icon-large {
+    width: 70px;
+    height: 70px;
+    font-size: 2.5rem;
+  }
+
+  .success-title {
+    font-size: 1.75rem;
+  }
+
+  .success-subtitle {
+    font-size: 1rem;
+  }
+
+  .info-section {
+    padding: 1.25rem;
+  }
+
+  .section-header h3 {
+    font-size: 1rem;
+  }
+
+  .section-content {
+    padding-left: 1.75rem;
+  }
+
+  .timeline-box {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-note {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+  }
+}
+
+
+
+
