@@ -6,6 +6,7 @@ import {
   calculateTeamScore,
   getTeamHealthGrade,
 } from '../services/scoreCalculation';
+import { sendBatchPersonalReports } from '../services/emailService';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -375,6 +376,133 @@ router.get('/assessments', async (req, res) => {
     console.error('Get assessments error:', error);
     res.status(500).json({
       error: 'Failed to get assessments',
+      details: error.message,
+    });
+  }
+});
+
+router.post('/assessments/:id/send-emails', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 获取评估数据
+    const assessment = await prisma.assessment.findUnique({
+      where: { id },
+      include: {
+        codes: {
+          where: { isUsed: true },
+        },
+        teamReport: true,
+      },
+    });
+
+    if (!assessment) {
+      return res.status(404).json({
+        error: 'Assessment not found',
+      });
+    }
+
+    if (!assessment.teamReport) {
+      return res.status(400).json({
+        error: 'Team report not calculated yet. Please calculate first.',
+      });
+    }
+
+    if (assessment.codes.length === 0) {
+      return res.status(400).json({
+        error: 'No participants have submitted yet.',
+      });
+    }
+
+    // 准备团队报告摘要
+    const teamSummary = {
+      teamName: assessment.teamName,
+      teamScore: assessment.teamReport.teamScore,
+      teamGrade: getTeamHealthGrade(assessment.teamReport.teamScore),
+      participationCount: assessment.teamReport.participationCount,
+      reportUrl: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/admin/assessment/${id}/report`,
+    };
+
+    // 获取团队平均维度分数
+    const teamDimensionAverages = JSON.parse(assessment.teamReport.dimensionScores);
+
+    // 准备所有参与者的个人报告数据
+    const personalReports = assessment.codes.map((code) => {
+      const scores = JSON.parse(code.scores!);
+      
+      return {
+        participantName: code.name!,
+        participantEmail: code.email!,
+        personalScore: scores.personalScore,
+        teamAverageScore: assessment.teamReport!.teamScore,
+        grade: scores.grade,
+        dimensionScores: scores.dimensionScores,
+        dimensionAverages: teamDimensionAverages,
+        strengths: scores.strengths || [],
+        growthAreas: scores.growthAreas || [],
+        recommendations: scores.recommendations || [],
+      };
+    });
+
+    // 批量发送邮件
+    const result = await sendBatchPersonalReports(personalReports, teamSummary);
+
+    if (result.success) {
+      res.json({
+        success: true,
+        message: `Successfully sent ${result.sent} emails`,
+        sent: result.sent,
+      });
+    } else {
+      res.status(207).json({
+        success: false,
+        message: `Sent ${result.sent} emails, ${result.failed} failed`,
+        sent: result.sent,
+        failed: result.failed,
+        errors: result.errors,
+      });
+    }
+  } catch (error: any) {
+    console.error('Send emails error:', error);
+    res.status(500).json({
+      error: 'Failed to send emails',
+      details: error.message,
+    });
+  }
+});
+
+/**
+ * POST /api/admin/test-email
+ * 发送测试邮件
+ */
+router.post('/test-email', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        error: 'Email address required',
+      });
+    }
+
+    const { sendTestEmail } = await import('../services/emailService');
+    const success = await sendTestEmail(email);
+
+    if (success) {
+      res.json({
+        success: true,
+        message: 'Test email sent successfully',
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to send test email',
+      });
+    }
+  } catch (error: any) {
+    console.error('Test email error:', error);
+    res.status(500).json({
+      error: 'Failed to send test email',
       details: error.message,
     });
   }
