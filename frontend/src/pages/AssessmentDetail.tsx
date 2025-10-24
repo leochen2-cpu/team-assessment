@@ -31,9 +31,9 @@ function AssessmentDetail() {
   const [error, setError] = useState<string | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [isSendingEmails, setIsSendingEmails] = useState(false);
-  const [emailSuccess, setEmailSuccess] = useState<string | null>(null);
 
   useEffect(() => {
+    // 检查登录状态
     const isLoggedIn = localStorage.getItem('adminLoggedIn');
     if (!isLoggedIn) {
       navigate('/admin/login');
@@ -82,51 +82,67 @@ function AssessmentDetail() {
 
       const data = await response.json();
 
+      // 计算成功后跳转到团队报告页面
       if (data.success) {
         navigate(`/admin/assessment/${id}/report`);
       }
     } catch (err: any) {
       console.error('Calculate report error:', err);
       setError(err.message);
-      alert(`Error: ${err.message}`);
+      alert(`❌ Error: ${err.message}`);
     } finally {
       setIsCalculating(false);
     }
   };
 
   const handleSendEmails = async () => {
-    if (!assessment || !assessment.teamReport) {
-      alert('Please calculate the team report first');
+    if (!assessment) return;
+
+    // 确认对话框
+    if (!confirm(`Send personal reports to all ${assessment.submittedCount} participants?`)) {
       return;
     }
-
-    const confirmed = window.confirm(
-      `Are you sure you want to send email reports to all ${assessment.submittedCount} participants?`
-    );
-
-    if (!confirmed) return;
 
     try {
       setIsSendingEmails(true);
       setError(null);
-      setEmailSuccess(null);
 
-      const response = await fetch(`http://localhost:3001/api/admin/assessments/${id}/send-emails`, {
-        method: 'POST',
-      });
+      console.log('🚀 Sending emails to:', assessment.submittedCount, 'participants');
+
+      const response = await fetch(
+        `http://localhost:3001/api/admin/assessments/${id}/send-reports`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      console.log('📧 Response status:', response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('❌ Error response:', errorData);
+        throw new Error(errorData.error || 'Failed to send emails');
+      }
 
       const data = await response.json();
+      console.log('✅ Success response:', data);
 
-      if (data.success) {
-        setEmailSuccess(`✅ Successfully sent ${data.sent} emails!`);
-        alert(`Success! Sent ${data.sent} email reports.`);
-      } else {
-        throw new Error(data.error || 'Failed to send some emails');
-      }
+      alert(
+        `✅ Email Sending Complete!\n\n` +
+        `Total: ${data.result.total}\n` +
+        `Success: ${data.result.success}\n` +
+        `Failed: ${data.result.failed}`
+      );
+
+      // 刷新页面数据
+      await fetchAssessmentDetail();
     } catch (err: any) {
-      console.error('Send emails error:', err);
+      console.error('❌ Send emails error:', err);
       setError(err.message);
-      alert(`Error sending emails: ${err.message}`);
+      alert(`❌ Error: ${err.message}\n\nCheck the browser console and backend logs for details.`);
     } finally {
       setIsSendingEmails(false);
     }
@@ -191,13 +207,6 @@ function AssessmentDetail() {
         <p>Assessment Details</p>
       </div>
 
-      {/* Success Message */}
-      {emailSuccess && (
-        <div className="success-alert">
-          {emailSuccess}
-        </div>
-      )}
-
       {/* Stats Overview */}
       <div className="stats-overview">
         <div className="stat-box">
@@ -258,53 +267,47 @@ function AssessmentDetail() {
       {isComplete && (
         <div className="actions-section">
           {assessment.teamReport ? (
-            <>
-              <button 
-                onClick={handleViewReport}
-                className="btn-primary btn-large"
-              >
-                📊 View Team Report
-              </button>
-              <button 
-                onClick={handleSendEmails}
-                className="btn-secondary btn-large"
-                disabled={isSendingEmails}
-              >
-                {isSendingEmails ? (
-                  <>
-                    <span className="spinner"></span>
-                    Sending Emails...
-                  </>
-                ) : (
-                  '📧 Send Email Reports (HubSpot)'
-                )}
-              </button>
-            </>
+            <button 
+              onClick={handleViewReport}
+              className="btn-primary btn-large"
+            >
+              📊 View Team Report
+            </button>
           ) : (
-            <>
-              <button 
-                onClick={handleCalculateReport}
-                className="btn-primary btn-large"
-                disabled={isCalculating}
-              >
-                {isCalculating ? (
-                  <>
-                    <span className="spinner"></span>
-                    Calculating...
-                  </>
-                ) : (
-                  '📊 Calculate Team Report'
-                )}
-              </button>
-              <button className="btn-secondary btn-large" disabled>
-                📧 Send Email Reports
-              </button>
-            </>
+            <button 
+              onClick={handleCalculateReport}
+              className="btn-primary btn-large"
+              disabled={isCalculating}
+            >
+              {isCalculating ? (
+                <>
+                  <span className="spinner"></span>
+                  Calculating...
+                </>
+              ) : (
+                '📊 Calculate Team Report'
+              )}
+            </button>
           )}
+          
+          <button 
+            onClick={handleSendEmails}
+            className="btn-secondary btn-large"
+            disabled={isSendingEmails || !assessment.teamReport}
+          >
+            {isSendingEmails ? (
+              <>
+                <span className="spinner"></span>
+                Sending Emails...
+              </>
+            ) : (
+              '📧 Send Email Reports'
+            )}
+          </button>
         </div>
       )}
 
-      {/* Team Report Summary */}
+      {/* Team Report Summary (if exists) */}
       {assessment.teamReport && (
         <div className="report-section">
           <h2>📈 Team Report Summary</h2>

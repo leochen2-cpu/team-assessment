@@ -176,4 +176,95 @@ router.post('/:code/submit', async (req, res) => {
   }
 });
 
+/**
+ * GET /api/assessments/:code/report
+ * 获取个人报告（包含个人 vs 团队对比）
+ */
+router.get('/:code/report', async (req, res) => {
+  try {
+    const { code } = req.params;
+
+    // 查找 code
+    const codeRecord = await prisma.participantCode.findUnique({
+      where: { code },
+      include: {
+        assessment: {
+          include: {
+            teamReport: true,
+          },
+        },
+      },
+    });
+
+    if (!codeRecord) {
+      return res.status(404).json({
+        error: 'Invalid code',
+      });
+    }
+
+    if (!codeRecord.isUsed) {
+      return res.status(400).json({
+        error: 'This assessment has not been completed yet',
+      });
+    }
+
+    const assessment = codeRecord.assessment;
+
+    if (!assessment.teamReport) {
+      return res.status(400).json({
+        error: 'Team report not ready yet. Please wait for all team members to complete their assessments.',
+      });
+    }
+
+    // 解析个人得分
+    const personalScores = JSON.parse(codeRecord.scores!);
+    
+    // 解析团队平均分
+    const teamDimensionScores = JSON.parse(assessment.teamReport.dimensionScores);
+
+    res.json({
+      success: true,
+      report: {
+        participantName: codeRecord.name,
+        participantEmail: codeRecord.email,
+        teamName: assessment.teamName,
+        submittedAt: codeRecord.submittedAt,
+        
+        // 个人数据
+        personalScore: personalScores.personalScore,
+        personalGrade: personalScores.grade,
+        personalDimensions: personalScores.dimensionScores,
+        strengths: personalScores.strengths,
+        growthAreas: personalScores.growthAreas,
+        recommendations: personalScores.recommendations,
+        
+        // 团队数据
+        teamScore: assessment.teamReport.teamScore,
+        teamGrade: assessment.teamReport.healthGrade,
+        teamDimensions: teamDimensionScores,
+        participationCount: assessment.teamReport.participationCount,
+        
+        // 对比数据
+        comparison: {
+          scoreDifference: personalScores.personalScore - assessment.teamReport.teamScore,
+          dimensionComparison: Object.keys(personalScores.dimensionScores).reduce((acc, key) => {
+            acc[key] = {
+              personal: personalScores.dimensionScores[key],
+              team: teamDimensionScores[key],
+              difference: personalScores.dimensionScores[key] - teamDimensionScores[key],
+            };
+            return acc;
+          }, {} as any),
+        },
+      },
+    });
+  } catch (error: any) {
+    console.error('Get personal report error:', error);
+    res.status(500).json({
+      error: 'Failed to get personal report',
+      details: error.message,
+    });
+  }
+});
+
 export default router;

@@ -508,4 +508,77 @@ router.post('/test-email', async (req, res) => {
   }
 });
 
+// 在现有的 adminRoutes.ts 文件中添加以下代码
+
+/**
+ * POST /api/admin/assessments/:id/send-reports
+ * 发送个人报告邮件给所有参与者
+ */
+router.post('/assessments/:id/send-reports', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 获取评估和团队报告
+    const assessment = await prisma.assessment.findUnique({
+      where: { id },
+      include: {
+        codes: {
+          where: {
+            isUsed: true,
+          },
+        },
+        teamReport: true,
+      },
+    });
+
+    if (!assessment) {
+      return res.status(404).json({
+        error: 'Assessment not found',
+      });
+    }
+
+    if (!assessment.teamReport) {
+      return res.status(400).json({
+        error: 'Team report not calculated yet. Please calculate first.',
+      });
+    }
+
+    // 准备邮件数据
+    const emailReports = assessment.codes.map((code) => {
+      // 解析个人得分
+      const scoresData = JSON.parse(code.scores!);
+      
+      return {
+        participantName: code.name!,
+        participantEmail: code.email!,
+        teamName: assessment.teamName,
+        personalScore: scoresData.personalScore,
+        teamScore: assessment.teamReport!.teamScore,
+        reportLink: `${process.env.FRONTEND_URL}/participant/${code.code}/report`,
+      };
+    });
+
+    // 发送邮件
+    const { sendBulkPersonalReports } = await import('../services/emailService');
+    const result = await sendBulkPersonalReports(emailReports);
+
+    res.json({
+      success: true,
+      message: 'Emails sent successfully',
+      result: {
+        total: emailReports.length,
+        success: result.success,
+        failed: result.failed,
+      },
+    });
+  } catch (error: any) {
+    console.error('Send reports error:', error);
+    res.status(500).json({
+      error: 'Failed to send reports',
+      details: error.message,
+    });
+  }
+});
+
+
 export default router;
