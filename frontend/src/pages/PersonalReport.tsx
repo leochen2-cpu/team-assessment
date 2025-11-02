@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './PersonalReport.css';
+import RadarChart from '../components/RadarChart';
 
 interface DimensionComparison {
   personal: number;
@@ -44,7 +45,7 @@ function PersonalReport() {
 
   const fetchPersonalReport = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/api/participant/${code}/report`);
+      const response = await fetch(`http://localhost:3001/api/assessments/${code}/report`);
       
       if (!response.ok) {
         const errorData = await response.json();
@@ -146,6 +147,18 @@ function PersonalReport() {
           <p className="comparison-note">
             Based on {report.participationCount} team member{report.participationCount > 1 ? 's' : ''}
           </p>
+        </div>
+
+        {/* 雷达图可视化 */}
+        <div className="radar-chart-section">
+          <h3>📊 Dimension Comparison</h3>
+          <p className="section-description">
+            Visual comparison of your scores vs. team average across all 7 dimensions
+          </p>
+          <RadarChart
+            personalScores={report.personalDimensions}
+            teamScores={report.teamDimensions}
+          />
         </div>
 
         {/* Dimension Comparison */}

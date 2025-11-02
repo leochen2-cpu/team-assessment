@@ -1,20 +1,27 @@
+/* 雷达图容器样式 */
 .radar-chart-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem 1rem;
-  background: #f9fafb;
-  border-radius: 1rem;
-  margin: 2rem 0;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.radar-chart-canvas {
-  max-width: 100%;
-  height: auto;
-}
-
-@media (max-width: 640px) {
+/* 响应式设计 - 平板设备 */
+@media (max-width: 768px) {
   .radar-chart-container {
-    padding: 1rem 0.5rem;
+    max-width: 100%;
+    padding: 15px;
   }
 }
+
+/* 响应式设计 - 手机设备 */
+@media (max-width: 480px) {
+  .radar-chart-container {
+    padding: 10px;
+  }
+}
+
+

@@ -31,6 +31,7 @@ function AssessmentDetail() {
   const [error, setError] = useState<string | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [isSendingEmails, setIsSendingEmails] = useState(false);
+  const [isSendingReminders, setIsSendingReminders] = useState(false); // ⬅️ 新增：提醒邮件状态
 
   useEffect(() => {
     // 检查登录状态
@@ -148,6 +149,68 @@ function AssessmentDetail() {
     }
   };
 
+  // ⬇️⬇️⬇️ 新增：发送提醒邮件的处理函数 ⬇️⬇️⬇️
+  const handleSendReminders = async () => {
+    if (!assessment) return;
+
+    const pendingCount = assessment.memberCount - assessment.submittedCount;
+    
+    if (pendingCount === 0) {
+      alert('✅ All participants have completed the survey!');
+      return;
+    }
+
+    // 确认对话框
+    if (!confirm(`Send reminder emails to ${pendingCount} participant(s) who haven't completed the survey?`)) {
+      return;
+    }
+
+    try {
+      setIsSendingReminders(true);
+      setError(null);
+
+      console.log('📧 Sending reminder emails to:', pendingCount, 'participants');
+
+      const response = await fetch(
+        `http://localhost:3001/api/admin/assessments/${id}/send-reminders`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      console.log('📧 Response status:', response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('❌ Error response:', errorData);
+        throw new Error(errorData.error || 'Failed to send reminder emails');
+      }
+
+      const data = await response.json();
+      console.log('✅ Reminders sent:', data);
+
+      alert(
+        `✅ Reminder Emails Sent!\n\n` +
+        `Total: ${data.result.total}\n` +
+        `Success: ${data.result.success}\n` +
+        `Failed: ${data.result.failed}`
+      );
+      
+      // 刷新页面数据
+      await fetchAssessmentDetail();
+    } catch (err: any) {
+      console.error('❌ Send reminders error:', err);
+      setError(err.message);
+      alert(`❌ Error: ${err.message}\n\nCheck the browser console and backend logs for details.`);
+    } finally {
+      setIsSendingReminders(false);
+    }
+  };
+  // ⬆️⬆️⬆️ 新增结束 ⬆️⬆️⬆️
+
   const handleViewReport = () => {
     navigate(`/admin/assessment/${id}/report`);
   };
@@ -195,6 +258,7 @@ function AssessmentDetail() {
 
   const completionPercentage = (assessment.submittedCount / assessment.memberCount) * 100;
   const isComplete = assessment.submittedCount === assessment.memberCount;
+  const pendingCount = assessment.memberCount - assessment.submittedCount; // ⬅️ 新增：计算待完成人数
 
   return (
     <div className="detail-container">
@@ -262,6 +326,50 @@ function AssessmentDetail() {
           {assessment.submittedCount} of {assessment.memberCount} team members have completed the assessment
         </p>
       </div>
+
+      {/* ⬇️⬇️⬇️ 新增：提醒邮件按钮（显示在未完成时） ⬇️⬇️⬇️ */}
+      {!isComplete && pendingCount > 0 && (
+        <div className="actions-section">
+          <button 
+            onClick={handleSendReminders}
+            disabled={isSendingReminders}
+            className="btn-reminder btn-large"
+            style={{
+              backgroundColor: '#f59e0b',
+              color: 'white',
+              border: 'none',
+              cursor: isSendingReminders ? 'not-allowed' : 'pointer',
+              opacity: isSendingReminders ? 0.6 : 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              transition: 'all 0.3s ease',
+            }}
+          >
+            {isSendingReminders ? (
+              <>
+                <span className="spinner"></span>
+                Sending Reminders...
+              </>
+            ) : (
+              <>
+                ⏰ Send Reminder Emails
+                <span style={{ 
+                  backgroundColor: 'rgba(255, 255, 255, 0.3)', 
+                  padding: '0.25rem 0.75rem', 
+                  borderRadius: '1rem',
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                }}>
+                  {pendingCount} pending
+                </span>
+              </>
+            )}
+          </button>
+        </div>
+      )}
+      {/* ⬆️⬆️⬆️ 新增结束 ⬆️⬆️⬆️ */}
 
       {/* Actions */}
       {isComplete && (

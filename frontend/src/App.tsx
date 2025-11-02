@@ -8,6 +8,7 @@ import ParticipantEntry from './pages/ParticipantEntry';
 import ParticipantInfo from './pages/ParticipantInfo';
 import SurveyQuestions from './pages/SurveyQuestions';
 import SubmissionSuccess from './pages/SubmissionSuccess';
+import PersonalReport from './pages/PersonalReport';  // ⬅️ 新增这一行
 import './App.css';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/survey/:code/info" element={<ParticipantInfo />} />
           <Route path="/survey/:code/questions" element={<SurveyQuestions />} />
           <Route path="/survey/:code/success" element={<SubmissionSuccess />} />
+          <Route path="/participant/:code/report" element={<PersonalReport />} />
           
           {/* 未匹配路由重定向 */}
           <Route path="*" element={<Navigate to="/survey" replace />} />

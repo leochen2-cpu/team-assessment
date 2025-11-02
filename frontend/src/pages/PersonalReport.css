@@ -505,3 +505,62 @@
     border: 1px solid #e5e7eb;
   }
 }
+
+/* ========================================
+   雷达图部分的样式
+   将这些样式添加到 PersonalReport.css 文件的末尾
+   ======================================== */
+
+/* 雷达图部分容器 */
+.radar-chart-section {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  margin-bottom: 30px;
+}
+
+/* 雷达图标题 */
+.radar-chart-section h3 {
+  color: #1f2937;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* 雷达图描述文字 */
+.section-description {
+  color: #6b7280;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+/* 响应式设计 - 平板和手机 */
+@media (max-width: 768px) {
+  .radar-chart-section {
+    padding: 20px;
+  }
+
+  .radar-chart-section h3 {
+    font-size: 20px;
+  }
+  
+  .section-description {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .radar-chart-section {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .radar-chart-section h3 {
+    font-size: 18px;
+  }
+}

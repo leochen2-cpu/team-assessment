@@ -1,58 +1,95 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CreateAssessment.css';
 
-interface CreateAssessmentResponse {
-  success: boolean;
-  assessment: {
-    id: string;
-    teamName: string;
-    memberCount: number;
-    codes: string[];
-  };
+interface ParticipantEmail {
+  id: string;
+  email: string;
 }
 
 function CreateAssessment() {
   const navigate = useNavigate();
   const [teamName, setTeamName] = useState('');
-  const [memberCount, setMemberCount] = useState('');
-  const [createdBy, setCreatedBy] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [participants, setParticipants] = useState<ParticipantEmail[]>([
+    { id: '1', email: '' },
+  ]);
+  const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [createdAssessment, setCreatedAssessment] = useState<CreateAssessmentResponse['assessment'] | null>(null);
 
-  useEffect(() => {
-    // 检查登录状态
-    const isLoggedIn = localStorage.getItem('adminLoggedIn');
-    if (!isLoggedIn) {
-      navigate('/admin/login');
+  // 添加新的参与者输入框
+  const addParticipant = () => {
+    const newId = (participants.length + 1).toString();
+    setParticipants([...participants, { id: newId, email: '' }]);
+  };
+
+  // 删除参与者输入框
+  const removeParticipant = (id: string) => {
+    if (participants.length > 1) {
+      setParticipants(participants.filter(p => p.id !== id));
     }
-  }, [navigate]);
+  };
 
+  // 更新参与者邮箱
+  const updateParticipantEmail = (id: string, email: string) => {
+    setParticipants(
+      participants.map(p => (p.id === id ? { ...p, email } : p))
+    );
+  };
+
+  // 验证邮箱格式
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // 提交表单
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    // 验证
+    // 验证团队名称
     if (!teamName.trim()) {
       setError('Please enter a team name');
       return;
     }
 
-    const count = parseInt(memberCount);
-    if (!memberCount || isNaN(count) || count < 1 || count > 100) {
-      setError('Please enter a valid member count (1-100)');
+    // 获取所有非空邮箱
+    const emails = participants
+      .map(p => p.email.trim())
+      .filter(email => email !== '');
+
+    // 验证至少有一个参与者
+    if (emails.length === 0) {
+      setError('Please add at least one participant email');
       return;
     }
 
-    if (!createdBy.trim()) {
-      setError('Please enter your name');
+    // 验证所有邮箱格式
+    const invalidEmails = emails.filter(email => !isValidEmail(email));
+    if (invalidEmails.length > 0) {
+      setError(`Invalid email format: ${invalidEmails.join(', ')}`);
       return;
     }
 
-    setIsLoading(true);
+    // 检查重复邮箱
+    const uniqueEmails = new Set(emails);
+    if (uniqueEmails.size !== emails.length) {
+      setError('Duplicate emails found. Each participant must have a unique email address.');
+      return;
+    }
+
+    // 确认对话框
+    if (!confirm(
+      `Create assessment for "${teamName}" with ${emails.length} participant(s)?\n\n` +
+      `Invitation emails will be sent automatically to all participants.`
+    )) {
+      return;
+    }
 
     try {
+      setIsCreating(true);
+
+      // ✅ 修正后的 URL：去掉 /create
       const response = await fetch('http://localhost:3001/api/admin/assessments', {
         method: 'POST',
         headers: {
@@ -60,8 +97,8 @@ function CreateAssessment() {
         },
         body: JSON.stringify({
           teamName: teamName.trim(),
-          memberCount: count,
-          createdBy: createdBy.trim(),
+          participantEmails: emails,
+          createdBy: localStorage.getItem('adminUsername') || 'Admin',
         }),
       });
 
@@ -70,117 +107,49 @@ function CreateAssessment() {
         throw new Error(errorData.error || 'Failed to create assessment');
       }
 
-      const data: CreateAssessmentResponse = await response.json();
-      setCreatedAssessment(data.assessment);
+      const data = await response.json();
+
+      // 显示成功消息
+      alert(
+        `✅ Assessment Created Successfully!\n\n` +
+        `Team: ${teamName}\n` +
+        `Participants: ${emails.length}\n\n` +
+        `Invitation emails have been sent to all participants with their unique access codes.`
+      );
+
+      // 跳转到评估详情页面
+      navigate(`/admin/assessment/${data.assessment.id}`);
     } catch (err: any) {
       console.error('Create assessment error:', err);
       setError(err.message || 'Failed to create assessment');
+      alert(`❌ Error: ${err.message}`);
     } finally {
-      setIsLoading(false);
+      setIsCreating(false);
     }
   };
 
-  const handleCopyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-    alert(`Code ${code} copied to clipboard!`);
-  };
+  // 检查登录状态
+  useState(() => {
+    const isLoggedIn = localStorage.getItem('adminLoggedIn');
+    if (!isLoggedIn) {
+      navigate('/admin/login');
+    }
+  });
 
-  const handleCopyAllCodes = () => {
-    if (!createdAssessment) return;
-    const allCodes = createdAssessment.codes.join('\n');
-    navigator.clipboard.writeText(allCodes);
-    alert('All codes copied to clipboard!');
-  };
-
-  const handleBackToDashboard = () => {
-    navigate('/admin/dashboard');
-  };
-
-  // Success state - show generated codes
-  if (createdAssessment) {
-    return (
-      <div className="create-container">
-        <div className="success-card">
-          <div className="success-header">
-            <div className="success-icon">✅</div>
-            <h1>Assessment Created Successfully!</h1>
-            <p>Here are the unique codes for your team members</p>
-          </div>
-
-          <div className="assessment-info">
-            <div className="info-row">
-              <span className="info-label">Team Name:</span>
-              <span className="info-value">{createdAssessment.teamName}</span>
-            </div>
-            <div className="info-row">
-              <span className="info-label">Total Members:</span>
-              <span className="info-value">{createdAssessment.memberCount}</span>
-            </div>
-          </div>
-
-          <div className="codes-section">
-            <div className="codes-header">
-              <h2>📋 Unique Access Codes</h2>
-              <button onClick={handleCopyAllCodes} className="btn-copy-all">
-                Copy All Codes
-              </button>
-            </div>
-            
-            <div className="codes-grid">
-              {createdAssessment.codes.map((code, index) => (
-                <div key={code} className="code-card">
-                  <div className="code-number">#{index + 1}</div>
-                  <div className="code-value">{code}</div>
-                  <button 
-                    onClick={() => handleCopyCode(code)}
-                    className="btn-copy"
-                  >
-                    📋 Copy
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="success-instructions">
-            <h3>📝 Next Steps:</h3>
-            <ol>
-              <li>Share each unique code with a team member</li>
-              <li>Team members can access the survey at <code>/survey</code></li>
-              <li>Each code can only be used once</li>
-              <li>Track progress in the assessment details page</li>
-            </ol>
-          </div>
-
-          <div className="success-actions">
-            <button onClick={handleBackToDashboard} className="btn-primary btn-large">
-              Back to Dashboard
-            </button>
-            <button 
-              onClick={() => navigate(`/admin/assessment/${createdAssessment.id}`)}
-              className="btn-secondary btn-large"
-            >
-              View Assessment Details
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Form state
   return (
     <div className="create-container">
       <div className="create-card">
-        <div className="card-header">
-          <div className="header-icon">🎯</div>
-          <h1>Create New Assessment</h1>
-          <p>Generate unique codes for your team</p>
+        <div className="create-header">
+          <button onClick={() => navigate('/admin/dashboard')} className="btn-back">
+            ← Back to Dashboard
+          </button>
+          <h1>📝 Create New Assessment</h1>
+          <p>Set up a new team effectiveness assessment</p>
         </div>
 
         <form onSubmit={handleSubmit} className="create-form">
-          {/* Team Name */}
-          <div className="form-group">
+          {/* 团队名称 */}
+          <div className="form-section">
             <label htmlFor="teamName" className="form-label">
               Team Name <span className="required">*</span>
             </label>
@@ -189,80 +158,113 @@ function CreateAssessment() {
               id="teamName"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
-              placeholder="e.g., Marketing Team Q1"
+              placeholder="e.g., Marketing Team Q1, Engineering Sprint Team"
               className="form-input"
-              disabled={isLoading}
+              disabled={isCreating}
+              autoFocus
             />
+            <p className="form-hint">
+              Choose a descriptive name for this assessment
+            </p>
           </div>
 
-          {/* Member Count */}
-          <div className="form-group">
-            <label htmlFor="memberCount" className="form-label">
-              Number of Team Members <span className="required">*</span>
-            </label>
-            <input
-              type="number"
-              id="memberCount"
-              value={memberCount}
-              onChange={(e) => setMemberCount(e.target.value)}
-              placeholder="e.g., 5"
-              min="1"
-              max="100"
-              className="form-input"
-              disabled={isLoading}
-            />
-            <p className="form-hint">Enter a number between 1 and 100</p>
+          {/* 参与者邮箱列表 */}
+          <div className="form-section">
+            <div className="section-header">
+              <label className="form-label">
+                Participant Emails <span className="required">*</span>
+              </label>
+              <span className="participant-count">
+                {participants.filter(p => p.email.trim()).length} participant(s)
+              </span>
+            </div>
+            <p className="form-hint" style={{ marginBottom: '1rem' }}>
+              📧 Each participant will receive an email with their unique access code
+            </p>
+
+            <div className="participants-list">
+              {participants.map((participant, index) => (
+                <div key={participant.id} className="participant-row">
+                  <span className="participant-number">{index + 1}</span>
+                  <input
+                    type="email"
+                    value={participant.email}
+                    onChange={(e) => updateParticipantEmail(participant.id, e.target.value)}
+                    placeholder="participant@example.com"
+                    className="participant-input"
+                    disabled={isCreating}
+                  />
+                  {participants.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeParticipant(participant.id)}
+                      className="btn-remove"
+                      disabled={isCreating}
+                      title="Remove participant"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={addParticipant}
+              className="btn-add-participant"
+              disabled={isCreating}
+            >
+              ➕ Add Another Participant
+            </button>
           </div>
 
-          {/* Created By */}
-          <div className="form-group">
-            <label htmlFor="createdBy" className="form-label">
-              Your Name <span className="required">*</span>
-            </label>
-            <input
-              type="text"
-              id="createdBy"
-              value={createdBy}
-              onChange={(e) => setCreatedBy(e.target.value)}
-              placeholder="e.g., John Smith"
-              className="form-input"
-              disabled={isLoading}
-            />
-          </div>
-
-          {/* Error Message */}
+          {/* 错误提示 */}
           {error && (
             <div className="error-alert">
               <span className="error-icon">⚠️</span>
-              {error}
+              <span>{error}</span>
             </div>
           )}
 
-          {/* Submit Button */}
-          <button 
-            type="submit" 
-            className="btn-primary btn-large btn-full"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <span className="spinner"></span>
-                Creating Assessment...
-              </>
-            ) : (
-              <>Create Assessment →</>
-            )}
-          </button>
+          {/* 提交按钮 */}
+          <div className="form-actions">
+            <button
+              type="button"
+              onClick={() => navigate('/admin/dashboard')}
+              className="btn-cancel"
+              disabled={isCreating}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn-submit"
+              disabled={isCreating || !teamName.trim() || participants.filter(p => p.email.trim()).length === 0}
+            >
+              {isCreating ? (
+                <>
+                  <span className="spinner"></span>
+                  Creating & Sending Emails...
+                </>
+              ) : (
+                <>
+                  ✉️ Create Assessment & Send Invites
+                </>
+              )}
+            </button>
+          </div>
 
-          {/* Back Button */}
-          <button 
-            type="button"
-            onClick={handleBackToDashboard}
-            className="btn-text"
-            disabled={isLoading}
-          >
-            ← Back to Dashboard
-          </button>
+          {/* 说明信息 */}
+          <div className="info-box">
+            <h3>📋 What happens next?</h3>
+            <ul>
+              <li>✅ Each participant will receive an email with their unique access code</li>
+              <li>✅ They can click the link in the email to start the assessment</li>
+              <li>✅ You can send reminder emails to participants who haven't completed</li>
+              <li>✅ Once everyone completes, you can generate the team report</li>
+            </ul>
+          </div>
         </form>
       </div>
     </div>

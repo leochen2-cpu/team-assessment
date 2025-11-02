@@ -1,162 +1,180 @@
-// 雷达图组件 - 显示7个维度的分数
-
-import { useEffect, useRef } from 'react';
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import type { ChartOptions } from 'chart.js';  // ⬅️ 使用 type 导入
+import { Radar } from 'react-chartjs-2';
 import './RadarChart.css';
 
-interface DimensionScores {
-  teamConnection: number;
-  appreciation: number;
-  responsiveness: number;
-  trustPositivity: number;
-  conflictManagement: number;
-  goalSupport: number;
-  warningSigns: number;
-}
+// 注册 Chart.js 组件
+ChartJS.register(
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend
+);
 
 interface RadarChartProps {
-  scores: DimensionScores;
+  personalScores: {
+    teamConnection: number;
+    appreciation: number;
+    responsiveness: number;
+    trustPositivity: number;
+    conflictManagement: number;
+    goalSupport: number;
+    warningSigns: number;
+  };
+  teamScores: {
+    teamConnection: number;
+    appreciation: number;
+    responsiveness: number;
+    trustPositivity: number;
+    conflictManagement: number;
+    goalSupport: number;
+    warningSigns: number;
+  };
 }
 
-const RadarChart = ({ scores }: RadarChartProps) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+function RadarChart({ personalScores, teamScores }: RadarChartProps) {
+  // 维度标签（按照要求的顺序，带emoji图标）
+  const labels = [
+    '🤝 Team Connection',
+    '🙏 Appreciation',
+    '👂 Responsiveness',
+    '✨ Trust & Positivity',
+    '⚖️ Conflict Management',
+    '🎯 Goal Support',
+    '💬 Healthy Communication',
+  ];
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  // 提取个人分数数据
+  const personalData = [
+    personalScores.teamConnection,
+    personalScores.appreciation,
+    personalScores.responsiveness,
+    personalScores.trustPositivity,
+    personalScores.conflictManagement,
+    personalScores.goalSupport,
+    personalScores.warningSigns, // 这对应 "Healthy Communication"
+  ];
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  // 提取团队平均分数数据
+  const teamData = [
+    teamScores.teamConnection,
+    teamScores.appreciation,
+    teamScores.responsiveness,
+    teamScores.trustPositivity,
+    teamScores.conflictManagement,
+    teamScores.goalSupport,
+    teamScores.warningSigns,
+  ];
 
-    // 设置画布大小
-    const size = 400;
-    canvas.width = size;
-    canvas.height = size;
-    const center = size / 2;
-    const maxRadius = size / 2 - 60;
+  // 图表数据配置
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        label: 'Your Score',
+        data: personalData,
+        backgroundColor: 'rgba(59, 130, 246, 0.2)', // 蓝色半透明
+        borderColor: '#3b82f6', // 蓝色边框
+        borderWidth: 2,
+        pointBackgroundColor: '#3b82f6',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: '#3b82f6',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      },
+      {
+        label: 'Team Average',
+        data: teamData,
+        backgroundColor: 'rgba(245, 158, 11, 0.2)', // 橙色半透明
+        borderColor: '#f59e0b', // 橙色边框
+        borderWidth: 2,
+        pointBackgroundColor: '#f59e0b',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: '#f59e0b',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      },
+    ],
+  };
 
-    // 清空画布
-    ctx.clearRect(0, 0, size, size);
-
-    // 维度标签和对应分数
-    const dimensions = [
-      { label: 'Team\nConnection', score: scores.teamConnection, key: 'teamConnection' },
-      { label: 'Appreciation', score: scores.appreciation, key: 'appreciation' },
-      { label: 'Responsiveness', score: scores.responsiveness, key: 'responsiveness' },
-      { label: 'Trust &\nPositivity', score: scores.trustPositivity, key: 'trustPositivity' },
-      { label: 'Conflict\nManagement', score: scores.conflictManagement, key: 'conflictManagement' },
-      { label: 'Goal\nSupport', score: scores.goalSupport, key: 'goalSupport' },
-      { label: 'Healthy\nCommunication', score: scores.warningSigns, key: 'warningSigns' },
-    ];
-
-    const angleStep = (Math.PI * 2) / dimensions.length;
-
-    // 绘制背景网格（5个同心圆）
-    ctx.strokeStyle = '#e5e7eb';
-    ctx.lineWidth = 1;
-    for (let i = 1; i <= 5; i++) {
-      ctx.beginPath();
-      const radius = (maxRadius / 5) * i;
-      for (let j = 0; j <= dimensions.length; j++) {
-        const angle = angleStep * j - Math.PI / 2;
-        const x = center + radius * Math.cos(angle);
-        const y = center + radius * Math.sin(angle);
-        if (j === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
-      }
-      ctx.closePath();
-      ctx.stroke();
-    }
-
-    // 绘制轴线
-    ctx.strokeStyle = '#d1d5db';
-    ctx.lineWidth = 1;
-    dimensions.forEach((_, index) => {
-      const angle = angleStep * index - Math.PI / 2;
-      const x = center + maxRadius * Math.cos(angle);
-      const y = center + maxRadius * Math.sin(angle);
-      ctx.beginPath();
-      ctx.moveTo(center, center);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-    });
-
-    // 绘制数据区域
-    ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
-    ctx.strokeStyle = '#3b82f6';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-
-    dimensions.forEach((dimension, index) => {
-      const angle = angleStep * index - Math.PI / 2;
-      const normalizedScore = dimension.score / 100; // 0-100 归一化到 0-1
-      const radius = maxRadius * normalizedScore;
-      const x = center + radius * Math.cos(angle);
-      const y = center + radius * Math.sin(angle);
-
-      if (index === 0) {
-        ctx.moveTo(x, y);
-      } else {
-        ctx.lineTo(x, y);
-      }
-    });
-
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // 绘制数据点
-    ctx.fillStyle = '#3b82f6';
-    dimensions.forEach((dimension, index) => {
-      const angle = angleStep * index - Math.PI / 2;
-      const normalizedScore = dimension.score / 100;
-      const radius = maxRadius * normalizedScore;
-      const x = center + radius * Math.cos(angle);
-      const y = center + radius * Math.sin(angle);
-
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    // 绘制维度标签
-    ctx.fillStyle = '#374151';
-    ctx.font = 'bold 12px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    dimensions.forEach((dimension, index) => {
-      const angle = angleStep * index - Math.PI / 2;
-      const labelRadius = maxRadius + 35;
-      const x = center + labelRadius * Math.cos(angle);
-      const y = center + labelRadius * Math.sin(angle);
-
-      // 处理多行标签
-      const lines = dimension.label.split('\n');
-      lines.forEach((line, lineIndex) => {
-        const lineY = y + (lineIndex - (lines.length - 1) / 2) * 14;
-        ctx.fillText(line, x, lineY);
-      });
-
-      // 绘制分数
-      ctx.font = '11px Arial';
-      ctx.fillStyle = '#6b7280';
-      const scoreY = y + lines.length * 7 + 8;
-      ctx.fillText(dimension.score.toFixed(1), x, scoreY);
-    });
-  }, [scores]);
+  // 图表选项配置
+  const options: ChartOptions<'radar'> = {
+    responsive: true,
+    maintainAspectRatio: true,
+    scales: {
+      r: {
+        min: 0,
+        max: 100,
+        beginAtZero: true,
+        ticks: {
+          stepSize: 20,
+          font: {
+            size: 12,
+          },
+        },
+        pointLabels: {
+          font: {
+            size: 14,
+            weight: 'bold',
+          },
+          color: '#1f2937',
+        },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)',
+        },
+        angleLines: {
+          color: 'rgba(0, 0, 0, 0.1)',
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          font: {
+            size: 14,
+            weight: 'bold',
+          },
+          padding: 20,
+          usePointStyle: true,
+        },
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        padding: 12,
+        titleFont: {
+          size: 14,
+          weight: 'bold',
+        },
+        bodyFont: {
+          size: 13,
+        },
+        callbacks: {
+          label: function (context) {
+            return `${context.dataset.label}: ${context.parsed.r.toFixed(1)}`;
+          },
+        },
+      },
+    },
+  };
 
   return (
     <div className="radar-chart-container">
-      <canvas ref={canvasRef} className="radar-chart-canvas" />
+      <Radar data={data} options={options} />
     </div>
   );
-};
+}
 
 export default RadarChart;
-
-
-
-
