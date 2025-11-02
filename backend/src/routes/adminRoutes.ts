@@ -53,37 +53,67 @@ router.post('/login', async (req, res) => {
 
 /**
  * POST /api/admin/assessments
- * 创建新的评估活动并生成unique codes
+ * 创建新的评估活动并自动发送邀请邮件
  */
 router.post('/assessments', async (req, res) => {
   try {
-    const { teamName, memberCount, createdBy } = req.body;
+    const { teamName, participantEmails, createdBy } = req.body;
 
-    if (!teamName || !memberCount || !createdBy) {
+    // 验证输入
+    if (!teamName || !teamName.trim()) {
       return res.status(400).json({
-        error: 'teamName, memberCount, and createdBy are required',
+        error: 'Team name is required',
       });
     }
 
-    if (memberCount < 1 || memberCount > 100) {
+    if (!participantEmails || !Array.isArray(participantEmails) || participantEmails.length === 0) {
       return res.status(400).json({
-        error: 'memberCount must be between 1 and 100',
+        error: 'At least one participant email is required',
+      });
+    }
+
+    if (!createdBy) {
+      return res.status(400).json({
+        error: 'createdBy is required',
+      });
+    }
+
+    // 验证所有邮箱格式
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const invalidEmails = participantEmails.filter((email: string) => !emailRegex.test(email));
+    
+    if (invalidEmails.length > 0) {
+      return res.status(400).json({
+        error: `Invalid email format: ${invalidEmails.join(', ')}`,
+      });
+    }
+
+    // 检查重复邮箱
+    const uniqueEmails = new Set(participantEmails);
+    if (uniqueEmails.size !== participantEmails.length) {
+      return res.status(400).json({
+        error: 'Duplicate emails found. Each participant must have a unique email address.',
       });
     }
 
     // 创建评估
     const assessment = await prisma.assessment.create({
       data: {
-        teamName,
-        memberCount,
-        createdBy,
+        teamName: teamName.trim(),
+        memberCount: participantEmails.length,
+        createdBy: createdBy || 'Admin',
         status: 'ACTIVE',
       },
     });
 
-    // 生成唯一的codes
+    console.log(`📝 Created assessment: ${assessment.id} - ${teamName}`);
+
+    // 为每个参与者创建代码并准备邮件数据
     const codes: string[] = [];
-    for (let i = 0; i < memberCount; i++) {
+    const invitationData = [];
+    
+    for (const email of participantEmails) {
+      // 生成唯一的访问代码
       let code = generateUniqueCode();
       let existing = await prisma.participantCode.findUnique({
         where: { code },
@@ -98,14 +128,32 @@ router.post('/assessments', async (req, res) => {
 
       codes.push(code);
 
-      // 创建参与者code记录
+      // 创建参与者代码记录（预先保存邮箱）
       await prisma.participantCode.create({
         data: {
           code,
+          email: email.trim(),
           assessmentId: assessment.id,
         },
       });
+
+      // 准备邮件数据
+      invitationData.push({
+        email: email.trim(),
+        code,
+        teamName: teamName.trim(),
+      });
+
+      console.log(`   ✓ Generated code ${code} for ${email}`);
     }
+
+    // 批量发送邀请邮件
+    console.log(`📧 Sending ${invitationData.length} invitation emails...`);
+    
+    const { sendBulkInvitationEmails } = await import('../services/emailService');
+    const emailResult = await sendBulkInvitationEmails(invitationData);
+
+    console.log(`   ✓ Sent: ${emailResult.success}, Failed: ${emailResult.failed}`);
 
     res.json({
       success: true,
@@ -115,6 +163,11 @@ router.post('/assessments', async (req, res) => {
         memberCount: assessment.memberCount,
         createdAt: assessment.createdAt,
         codes: codes,
+      },
+      emailResult: {
+        total: invitationData.length,
+        success: emailResult.success,
+        failed: emailResult.failed,
       },
     });
   } catch (error: any) {
@@ -580,5 +633,83 @@ router.post('/assessments/:id/send-reports', async (req, res) => {
   }
 });
 
+// ==========================================
+// 添加到 backend/src/routes/adminRoutes.ts
+// 在文件末尾，export default router 之前添加
+// ==========================================
+
+/**
+ * POST /api/admin/assessments/:id/send-reminders
+ * 发送提醒邮件给未完成问卷的参与者
+ */
+router.post('/assessments/:id/send-reminders', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 获取评估信息
+    const assessment = await prisma.assessment.findUnique({
+      where: { id },
+      include: {
+        codes: {
+          where: {
+            isUsed: false, // 只获取未使用的代码
+          },
+        },
+      },
+    });
+
+    if (!assessment) {
+      return res.status(404).json({
+        error: 'Assessment not found',
+      });
+    }
+
+    // 检查是否有未完成的参与者
+    const pendingParticipants = assessment.codes;
+    
+    if (pendingParticipants.length === 0) {
+      return res.status(400).json({
+        error: 'No pending participants found. All participants have completed the survey.',
+      });
+    }
+
+    // 准备提醒邮件数据
+    const reminderEmails = pendingParticipants.map((code) => ({
+      email: code.email || '',
+      code: code.code,
+      teamName: assessment.teamName,
+      name: code.name || 'Team Member',
+    }));
+
+    // 过滤掉没有邮箱的参与者
+    const validEmails = reminderEmails.filter(e => e.email);
+
+    if (validEmails.length === 0) {
+      return res.status(400).json({
+        error: 'No valid email addresses found for pending participants.',
+      });
+    }
+
+    // 发送提醒邮件
+    const { sendBulkReminderEmails } = await import('../services/emailService');
+    const result = await sendBulkReminderEmails(validEmails);
+
+    res.json({
+      success: true,
+      message: 'Reminder emails sent successfully',
+      result: {
+        total: validEmails.length,
+        success: result.success,
+        failed: result.failed,
+      },
+    });
+  } catch (error: any) {
+    console.error('Send reminders error:', error);
+    res.status(500).json({
+      error: 'Failed to send reminder emails',
+      details: error.message,
+    });
+  }
+});
 
 export default router;
