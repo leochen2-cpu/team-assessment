@@ -54,10 +54,11 @@ router.post('/login', async (req, res) => {
 /**
  * POST /api/admin/assessments
  * 创建新的评估活动并自动发送邀请邮件
+ * 🆕 新增：支持 organizationId 参数
  */
 router.post('/assessments', async (req, res) => {
   try {
-    const { teamName, participantEmails, createdBy } = req.body;
+    const { teamName, participantEmails, createdBy, organizationId } = req.body;
 
     // 验证输入
     if (!teamName || !teamName.trim()) {
@@ -96,13 +97,33 @@ router.post('/assessments', async (req, res) => {
       });
     }
 
-    // 创建评估
+    // 🆕 如果提供了 organizationId，验证组织是否存在
+    if (organizationId) {
+      const organization = await prisma.organization.findUnique({
+        where: { id: organizationId },
+      });
+
+      if (!organization) {
+        return res.status(404).json({
+          error: 'Organization not found',
+        });
+      }
+
+      if (!organization.isActive) {
+        return res.status(400).json({
+          error: 'Organization is inactive',
+        });
+      }
+    }
+
+    // 创建评估（🆕 添加 organizationId）
     const assessment = await prisma.assessment.create({
       data: {
         teamName: teamName.trim(),
         memberCount: participantEmails.length,
         createdBy: createdBy || 'Admin',
         status: 'ACTIVE',
+        organizationId: organizationId || null, // 🆕 关联组织
       },
     });
 
@@ -163,6 +184,7 @@ router.post('/assessments', async (req, res) => {
         memberCount: assessment.memberCount,
         createdAt: assessment.createdAt,
         codes: codes,
+        organizationId: assessment.organizationId, // 🆕 返回组织ID
       },
       emailResult: {
         total: invitationData.length,
@@ -182,6 +204,7 @@ router.post('/assessments', async (req, res) => {
 /**
  * GET /api/admin/assessments/:id
  * 获取评估详情和所有codes的提交状态
+ * 🆕 新增：包含组织信息
  */
 router.get('/assessments/:id', async (req, res) => {
   try {
@@ -202,6 +225,7 @@ router.get('/assessments/:id', async (req, res) => {
           },
         },
         teamReport: true,
+        organization: true, // 🆕 包含组织信息
       },
     });
 
@@ -225,6 +249,7 @@ router.get('/assessments/:id', async (req, res) => {
         submittedCount,
         codes: assessment.codes,
         teamReport: assessment.teamReport,
+        organization: assessment.organization, // 🆕 返回组织信息
       },
     });
   } catch (error: any) {
@@ -346,94 +371,8 @@ router.post('/assessments/:id/calculate', async (req, res) => {
 
 /**
  * POST /api/admin/assessments/:id/send-emails
- * 发送邮件给所有参与者（预留接口）
+ * 发送邮件给所有参与者
  */
-router.post('/assessments/:id/send-emails', async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const assessment = await prisma.assessment.findUnique({
-      where: { id },
-      include: {
-        codes: true,
-        teamReport: true,
-      },
-    });
-
-    if (!assessment) {
-      return res.status(404).json({
-        error: 'Assessment not found',
-      });
-    }
-
-    if (!assessment.teamReport) {
-      return res.status(400).json({
-        error: 'Team report not generated yet. Please calculate first.',
-      });
-    }
-
-    const submittedCodes = assessment.codes.filter(c => c.isUsed);
-
-    // TODO: 实现邮件发送逻辑
-    res.json({
-      success: true,
-      message: 'Email sending feature coming soon',
-      recipients: submittedCodes.length,
-    });
-  } catch (error: any) {
-    console.error('Send emails error:', error);
-    res.status(500).json({
-      error: 'Failed to send emails',
-      details: error.message,
-    });
-  }
-});
-
-/**
- * GET /api/admin/assessments
- * 获取所有评估列表
- */
-router.get('/assessments', async (req, res) => {
-  try {
-    const assessments = await prisma.assessment.findMany({
-      include: {
-        codes: {
-          select: {
-            isUsed: true,
-          },
-        },
-        teamReport: {
-          select: {
-            teamScore: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-
-    res.json({
-      success: true,
-      assessments: assessments.map(a => ({
-        id: a.id,
-        teamName: a.teamName,
-        memberCount: a.memberCount,
-        status: a.status,
-        createdAt: a.createdAt,
-        submittedCount: a.codes.filter(c => c.isUsed).length,
-        teamScore: a.teamReport?.teamScore,
-      })),
-    });
-  } catch (error: any) {
-    console.error('Get assessments error:', error);
-    res.status(500).json({
-      error: 'Failed to get assessments',
-      details: error.message,
-    });
-  }
-});
-
 router.post('/assessments/:id/send-emails', async (req, res) => {
   try {
     const { id } = req.params;
@@ -525,6 +464,59 @@ router.post('/assessments/:id/send-emails', async (req, res) => {
 });
 
 /**
+ * GET /api/admin/assessments
+ * 获取所有评估列表
+ * 🆕 新增：包含组织信息
+ */
+router.get('/assessments', async (req, res) => {
+  try {
+    const assessments = await prisma.assessment.findMany({
+      include: {
+        codes: {
+          select: {
+            isUsed: true,
+          },
+        },
+        teamReport: {
+          select: {
+            teamScore: true,
+          },
+        },
+        organization: { // 🆕 包含组织信息
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    res.json({
+      success: true,
+      assessments: assessments.map(a => ({
+        id: a.id,
+        teamName: a.teamName,
+        memberCount: a.memberCount,
+        status: a.status,
+        createdAt: a.createdAt,
+        submittedCount: a.codes.filter(c => c.isUsed).length,
+        teamScore: a.teamReport?.teamScore,
+        organization: a.organization, // 🆕 返回组织信息
+      })),
+    });
+  } catch (error: any) {
+    console.error('Get assessments error:', error);
+    res.status(500).json({
+      error: 'Failed to get assessments',
+      details: error.message,
+    });
+  }
+});
+
+/**
  * POST /api/admin/test-email
  * 发送测试邮件
  */
@@ -560,8 +552,6 @@ router.post('/test-email', async (req, res) => {
     });
   }
 });
-
-// 在现有的 adminRoutes.ts 文件中添加以下代码
 
 /**
  * POST /api/admin/assessments/:id/send-reports
@@ -632,11 +622,6 @@ router.post('/assessments/:id/send-reports', async (req, res) => {
     });
   }
 });
-
-// ==========================================
-// 添加到 backend/src/routes/adminRoutes.ts
-// 在文件末尾，export default router 之前添加
-// ==========================================
 
 /**
  * POST /api/admin/assessments/:id/send-reminders

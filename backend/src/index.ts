@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import assessmentRoutes from './routes/assessmentRoutes';
 import adminRoutes from './routes/adminRoutes';
+import organizationRoutes from './routes/organizationRoutes';
+import summaryReportRoutes from './routes/summaryReportRoutes';
 
 // 加载环境变量
 dotenv.config();
@@ -29,6 +31,9 @@ app.get('/api/health', (req, res) => {
 // API路由
 app.use('/api/assessments', assessmentRoutes);
 app.use('/api/admin', adminRoutes);
+
+app.use('/api/admin/organizations', organizationRoutes);
+app.use('/api/admin/organizations', summaryReportRoutes);
 
 // 错误处理中间件
 app.use((err: any, req: any, res: any, next: any) => {

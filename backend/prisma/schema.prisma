@@ -1,62 +1,178 @@
-// Prisma Schema - Unique Code 系统
-
-datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
-}
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
 }
 
-// 评估活动表（管理员创建）
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// 核心评估模型（已存在，已更新）
+// ============================================
+
 model Assessment {
-  id           String   @id @default(uuid())
-  teamName     String
-  memberCount  Int      // 成员数量
-  createdBy    String   // 管理员用户名
-  createdAt    DateTime @default(now())
-  status       String   @default("ACTIVE")  // ACTIVE, COMPLETED
+  id             String            @id @default(uuid())
+  teamName       String
+  memberCount    Int
+  status         String            @default("ACTIVE")
+  createdBy      String
+  createdAt      DateTime          @default(now())
   
-  codes        ParticipantCode[]
-  teamReport   TeamReport?
+  // 新增：组织关联
+  organizationId String?
+  organization   Organization?     @relation(fields: [organizationId], references: [id], onDelete: SetNull)
   
-  @@map("assessments")
+  codes          ParticipantCode[]
+  teamReport     TeamReport?
 }
 
-// 参与者代码表（每个人一个unique code）
 model ParticipantCode {
-  id           String   @id @default(uuid())
-  code         String   @unique  // 8位随机码
-  assessmentId String
-  isUsed       Boolean  @default(false)
-  name         String?  // 参与者姓名（提交后填写）
-  email        String?  // 参与者邮箱（提交后填写）
-  responses    String?  // JSON: {"Q1": 4, "Q2": 5, ...}
-  scores       String?  // JSON: {dimensions, personalScore, grade}
+  id           String      @id @default(uuid())
+  code         String      @unique
+  email        String?     // 创建评估时预先保存
+  name         String?     // 提交问卷时填写
+  isUsed       Boolean     @default(false)
+  responses    String?     // JSON: 27个问题的答案
+  scores       String?     // JSON: 计算出的分数
   submittedAt  DateTime?
-  emailSent    Boolean  @default(false)
-  emailSentAt  DateTime?
-  
-  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
-  
-  @@map("participant_codes")
+  emailSent    Boolean     @default(false)
+  assessmentId String
+  assessment   Assessment  @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
 }
 
-// 团队报告表（所有人提交后生成）
 model TeamReport {
-  id                String   @id @default(uuid())
-  assessmentId      String   @unique
-  teamScore         Float
-  baseScore         Float
-  consistencyFactor Float
-  penaltyFactor     Float
-  standardDeviation Float
-  dimensionScores   String   // JSON: {teamConnection: 75, ...}
-  participationCount Int
-  generatedAt       DateTime @default(now())
-  
-  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
-  
-  @@map("team_reports")
+  id                 String     @id @default(uuid())
+  assessmentId       String     @unique
+  teamScore          Float      // 团队总分 (0-100)
+  baseScore          Float      // 基础分数
+  consistencyFactor  Float      // 一致性因子
+  penaltyFactor      Float      // 惩罚因子
+  standardDeviation  Float      // 标准差
+  dimensionScores    String     // JSON: 6个维度的平均分
+  participationCount Int        // 参与人数
+  createdAt          DateTime   @default(now())
+  assessment         Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
 }
+
+// ============================================
+// 新增：组织层级结构
+// ============================================
+
+model Organization {
+  id          String         @id @default(uuid())
+  name        String         // "Marketing Department", "Tech Division"
+  description String?        // 组织描述（可选）
+  
+  // 层级关系（支持多层级）
+  parentId    String?
+  parent      Organization?  @relation("OrgHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
+  children    Organization[] @relation("OrgHierarchy")
+  
+  // 领导信息
+  leaderName  String
+  leaderEmail String
+  leaderPhone String?        // 可选：领导电话
+  
+  // 元数据
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  createdBy   String         // 创建者（管理员用户名）
+  isActive    Boolean        @default(true)  // 软删除标记
+  
+  // 关联
+  assessments    Assessment[]      // 这个组织下的所有评估
+  summaryReports SummaryReport[]   // 这个组织的汇总报告
+  
+  @@index([parentId])
+  @@index([leaderEmail])
+}
+
+// ============================================
+// 新增：汇总报告
+// ============================================
+
+model SummaryReport {
+  id              String       @id @default(uuid())
+  organizationId  String       @unique
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  // 基本信息
+  leaderName      String
+  leaderEmail     String
+  reportPeriod    String?      // 可选：报告周期（如 "Q1 2025"）
+  
+  // 汇总统计
+  totalTeams      Int          // 下属团队总数
+  completedTeams  Int          // 完成评估的团队数
+  pendingTeams    Int          // 未完成的团队数
+  
+  // 分数汇总
+  averageTeamScore Float       // 所有团队的平均分
+  highestScore     Float       // 最高团队分
+  lowestScore      Float       // 最低团队分
+  scoreStdDev      Float       // 分数标准差（反映团队间差异）
+  
+  // 维度汇总（JSON字符串）
+  dimensionAverages String     // 跨团队的维度平均值
+  // 格式: {
+  //   "teamConnection": 82.5,
+  //   "appreciation": 79.8,
+  //   "responsiveness": 77.3,
+  //   "trustPositivity": 81.2,
+  //   "conflictManagement": 68.3,
+  //   "goalSupport": 75.6
+  // }
+  
+  // 团队对比数据（JSON字符串）
+  teamComparisons   String     // 所有团队的详细对比
+  // 格式: [
+  //   {
+  //     "assessmentId": "xxx",
+  //     "teamName": "Marketing Team",
+  //     "teamScore": 85.3,
+  //     "healthGrade": "Exceptional",
+  //     "participationRate": 0.95,
+  //     "completedAt": "2025-01-15",
+  //     "dimensionScores": {...}
+  //   },
+  //   ...
+  // ]
+  
+  // 关键洞察（JSON字符串）
+  insights          String     // 自动生成的洞察和建议
+  // 格式: {
+  //   "strengths": ["All teams excel in Team Connection", ...],
+  //   "concerns": ["Operations needs focus on Conflict Management", ...],
+  //   "topPerformer": "Marketing Team",
+  //   "needsAttention": ["Operations Team"],
+  //   "crossTeamTrends": [...]
+  // }
+  
+  // 元数据
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  generatedBy       String     // 生成者（管理员用户名）
+  emailSent         Boolean    @default(false)  // 是否已发送邮件
+  emailSentAt       DateTime?  // 邮件发送时间
+  
+  @@index([organizationId])
+  @@index([createdAt])
+}
+
+// ============================================
+// 可选：审计日志（建议未来添加）
+// ============================================
+
+// model AuditLog {
+//   id        String   @id @default(uuid())
+//   action    String   // "CREATE_ORG", "GENERATE_REPORT", etc.
+//   entityType String  // "Organization", "Assessment", etc.
+//   entityId  String
+//   userId    String
+//   details   String?  // JSON
+//   createdAt DateTime @default(now())
+// }

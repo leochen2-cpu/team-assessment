@@ -1,10 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CreateAssessment.css';
 
 interface ParticipantEmail {
   id: string;
   email: string;
+}
+
+// 🆕 新增：组织类型定义
+interface Organization {
+  id: string;
+  name: string;
+  leaderName: string;
 }
 
 function CreateAssessment() {
@@ -15,6 +22,35 @@ function CreateAssessment() {
   ]);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // 🆕 新增：组织相关状态
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [selectedOrgId, setSelectedOrgId] = useState<string>('');
+  const [isLoadingOrgs, setIsLoadingOrgs] = useState(false);
+
+  // 🆕 新增：加载组织列表
+  useEffect(() => {
+    const fetchOrganizations = async () => {
+      try {
+        setIsLoadingOrgs(true);
+        const response = await fetch('http://localhost:3001/api/admin/organizations?format=flat&includeInactive=false');
+        
+        if (!response.ok) {
+          throw new Error('Failed to load organizations');
+        }
+
+        const result = await response.json();
+        setOrganizations(result.data || []);
+      } catch (error) {
+        console.error('Failed to load organizations:', error);
+        // 不显示错误，只是组织选择器会为空
+      } finally {
+        setIsLoadingOrgs(false);
+      }
+    };
+
+    fetchOrganizations();
+  }, []);
 
   // 添加新的参与者输入框
   const addParticipant = () => {
@@ -89,7 +125,6 @@ function CreateAssessment() {
     try {
       setIsCreating(true);
 
-      // ✅ 修正后的 URL：去掉 /create
       const response = await fetch('http://localhost:3001/api/admin/assessments', {
         method: 'POST',
         headers: {
@@ -99,6 +134,7 @@ function CreateAssessment() {
           teamName: teamName.trim(),
           participantEmails: emails,
           createdBy: localStorage.getItem('adminUsername') || 'Admin',
+          organizationId: selectedOrgId || undefined, // 🆕 新增：添加组织ID
         }),
       });
 
@@ -165,6 +201,37 @@ function CreateAssessment() {
             />
             <p className="form-hint">
               Choose a descriptive name for this assessment
+            </p>
+          </div>
+
+          {/* 🆕 新增：组织选择 */}
+          <div className="form-section">
+            <label htmlFor="organizationId" className="form-label">
+              Organization (Optional)
+            </label>
+            <select
+              id="organizationId"
+              value={selectedOrgId}
+              onChange={(e) => setSelectedOrgId(e.target.value)}
+              className="form-input"
+              disabled={isCreating || isLoadingOrgs}
+              style={{ cursor: 'pointer' }}
+            >
+              <option value="">No Organization (Standalone Assessment)</option>
+              {organizations.map((org) => (
+                <option key={org.id} value={org.id}>
+                  {org.name} - {org.leaderName}
+                </option>
+              ))}
+            </select>
+            <p className="form-hint">
+              {isLoadingOrgs ? (
+                '⏳ Loading organizations...'
+              ) : organizations.length === 0 ? (
+                '📝 No organizations available. You can create one in Organization Management.'
+              ) : (
+                '📊 Select an organization to include this assessment in organization reports'
+              )}
             </p>
           </div>
 

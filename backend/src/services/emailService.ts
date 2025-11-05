@@ -634,14 +634,381 @@ function getInvitationEmailTemplate(data: InvitationEmailData): string {
   `;
 }
 
+// ==============================================
+// 🆕 新增：汇总报告邮件功能
+// ==============================================
+
+interface SummaryEmailData {
+  organizationName: string;
+  leaderName: string;
+  totalTeams: number;
+  completedTeams: number;
+  averageTeamScore: number;
+  highestScore: number;
+  lowestScore: number;
+  healthGrade: string;
+  topPerformer: {
+    teamName: string;
+    score: number;
+  };
+  needsAttentionCount: number;
+  dimensionAverages: {
+    teamConnection: number;
+    appreciation: number;
+    responsiveness: number;
+    trustPositivity: number;
+    conflictManagement: number;
+    goalSupport: number;
+  };
+  strengths: string[];
+  concerns: string[];
+  reportUrl: string;
+}
+
+/**
+ * 🆕 生成汇总报告邮件 HTML
+ */
+export function generateSummaryReportEmailHTML(data: SummaryEmailData): string {
+  const {
+    organizationName,
+    leaderName,
+    totalTeams,
+    completedTeams,
+    averageTeamScore,
+    highestScore,
+    lowestScore,
+    healthGrade,
+    topPerformer,
+    needsAttentionCount,
+    dimensionAverages,
+    strengths,
+    concerns,
+    reportUrl,
+  } = data;
+
+  // 根据分数确定颜色
+  const scoreColor =
+    averageTeamScore >= 90
+      ? '#10b981' // green
+      : averageTeamScore >= 75
+      ? '#3b82f6' // blue
+      : averageTeamScore >= 50
+      ? '#f59e0b' // yellow
+      : '#ef4444'; // red
+
+  // 健康等级的中文翻译
+  const healthGradeChinese =
+    healthGrade === 'Exceptional'
+      ? '卓越'
+      : healthGrade === 'Strong'
+      ? '优秀'
+      : healthGrade === 'Developing'
+      ? '良好'
+      : '需要关注';
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>团队效能汇总报告</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f3f4f6; padding: 40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600;">
+                📊 团队效能汇总报告
+              </h1>
+              <p style="margin: 10px 0 0 0; color: #e0e7ff; font-size: 16px;">
+                ${organizationName}
+              </p>
+            </td>
+          </tr>
+
+          <!-- Greeting -->
+          <tr>
+            <td style="padding: 30px 30px 20px 30px;">
+              <p style="margin: 0; color: #374151; font-size: 16px; line-height: 1.6;">
+                尊敬的 <strong>${leaderName}</strong>，
+              </p>
+              <p style="margin: 15px 0 0 0; color: #6b7280; font-size: 14px; line-height: 1.6;">
+                您好！以下是 <strong>${organizationName}</strong> 的团队效能评估汇总报告。
+              </p>
+            </td>
+          </tr>
+
+          <!-- Overall Score Card -->
+          <tr>
+            <td style="padding: 0 30px 20px 30px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb; border-radius: 8px; border: 2px solid ${scoreColor};">
+                <tr>
+                  <td style="padding: 25px; text-align: center;">
+                    <div style="font-size: 14px; color: #6b7280; margin-bottom: 8px;">整体平均分数</div>
+                    <div style="font-size: 48px; font-weight: 700; color: ${scoreColor}; margin-bottom: 8px;">
+                      ${averageTeamScore.toFixed(1)}
+                    </div>
+                    <div style="font-size: 16px; font-weight: 600; color: ${scoreColor};">
+                      ${healthGradeChinese}
+                    </div>
+                    <div style="font-size: 13px; color: #9ca3af; margin-top: 10px;">
+                      完成率: ${completedTeams}/${totalTeams} (${((completedTeams / totalTeams) * 100).toFixed(0)}%)
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Key Metrics -->
+          <tr>
+            <td style="padding: 0 30px 20px 30px;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td width="50%" style="padding-right: 10px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #ecfdf5; border-radius: 6px; border: 1px solid #d1fae5;">
+                      <tr>
+                        <td style="padding: 15px; text-align: center;">
+                          <div style="font-size: 12px; color: #065f46; margin-bottom: 5px;">最高分</div>
+                          <div style="font-size: 24px; font-weight: 700; color: #10b981;">
+                            ${highestScore.toFixed(1)}
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <td width="50%" style="padding-left: 10px;">
+                    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fef3c7; border-radius: 6px; border: 1px solid #fde68a;">
+                      <tr>
+                        <td style="padding: 15px; text-align: center;">
+                          <div style="font-size: 12px; color: #92400e; margin-bottom: 5px;">最低分</div>
+                          <div style="font-size: 24px; font-weight: 700; color: #f59e0b;">
+                            ${lowestScore.toFixed(1)}
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Top Performer -->
+          <tr>
+            <td style="padding: 0 30px 20px 30px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #eff6ff; border-radius: 6px; border-left: 4px solid #3b82f6;">
+                <tr>
+                  <td style="padding: 15px 20px;">
+                    <div style="font-size: 13px; color: #1e40af; font-weight: 600; margin-bottom: 5px;">
+                      🏆 最佳表现团队
+                    </div>
+                    <div style="font-size: 16px; color: #1f2937; font-weight: 600;">
+                      ${topPerformer.teamName}
+                    </div>
+                    <div style="font-size: 14px; color: #3b82f6; margin-top: 3px;">
+                      分数: ${topPerformer.score.toFixed(1)}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Attention Needed -->
+          ${
+            needsAttentionCount > 0
+              ? `
+          <tr>
+            <td style="padding: 0 30px 20px 30px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fef2f2; border-radius: 6px; border-left: 4px solid #ef4444;">
+                <tr>
+                  <td style="padding: 15px 20px;">
+                    <div style="font-size: 13px; color: #991b1b; font-weight: 600; margin-bottom: 5px;">
+                      ⚠️ 需要关注
+                    </div>
+                    <div style="font-size: 14px; color: #374151;">
+                      ${needsAttentionCount} 个团队表现需要提升
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          `
+              : ''
+          }
+
+          <!-- Dimension Scores -->
+          <tr>
+            <td style="padding: 0 30px 20px 30px;">
+              <h3 style="margin: 0 0 15px 0; color: #111827; font-size: 16px; font-weight: 600;">
+                📈 维度表现
+              </h3>
+              <table width="100%" cellpadding="0" cellspacing="0">
+                ${Object.entries(dimensionAverages)
+                  .map(([key, value]) => {
+                    const dimensionNames: Record<string, string> = {
+                      teamConnection: '团队连接性',
+                      appreciation: '欣赏认可',
+                      responsiveness: '响应及时性',
+                      trustPositivity: '信任与积极性',
+                      conflictManagement: '冲突管理',
+                      goalSupport: '目标支持',
+                    };
+                    const barWidth = (value / 100) * 100;
+                    const barColor = value >= 80 ? '#10b981' : value >= 70 ? '#3b82f6' : '#f59e0b';
+                    
+                    return `
+                <tr>
+                  <td style="padding: 8px 0;">
+                    <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">
+                      ${dimensionNames[key]}
+                    </div>
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="background-color: #e5e7eb; border-radius: 4px; height: 8px; position: relative;">
+                          <div style="background-color: ${barColor}; width: ${barWidth}%; height: 8px; border-radius: 4px;"></div>
+                        </td>
+                        <td style="padding-left: 10px; font-size: 14px; font-weight: 600; color: #111827; white-space: nowrap;">
+                          ${value.toFixed(1)}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                    `;
+                  })
+                  .join('')}
+              </table>
+            </td>
+          </tr>
+
+          <!-- Strengths -->
+          ${
+            strengths.length > 0
+              ? `
+          <tr>
+            <td style="padding: 0 30px 20px 30px;">
+              <h3 style="margin: 0 0 10px 0; color: #111827; font-size: 16px; font-weight: 600;">
+                💪 组织优势
+              </h3>
+              ${strengths
+                .slice(0, 3)
+                .map(
+                  (strength) => `
+              <div style="padding: 8px 12px; background-color: #f0fdf4; border-radius: 4px; margin-bottom: 6px; font-size: 14px; color: #166534;">
+                ✓ ${strength}
+              </div>
+              `
+                )
+                .join('')}
+            </td>
+          </tr>
+          `
+              : ''
+          }
+
+          <!-- Concerns -->
+          ${
+            concerns.length > 0
+              ? `
+          <tr>
+            <td style="padding: 0 30px 20px 30px;">
+              <h3 style="margin: 0 0 10px 0; color: #111827; font-size: 16px; font-weight: 600;">
+                🎯 关注领域
+              </h3>
+              ${concerns
+                .slice(0, 3)
+                .map(
+                  (concern) => `
+              <div style="padding: 8px 12px; background-color: #fef2f2; border-radius: 4px; margin-bottom: 6px; font-size: 14px; color: #991b1b;">
+                → ${concern}
+              </div>
+              `
+                )
+                .join('')}
+            </td>
+          </tr>
+          `
+              : ''
+          }
+
+          <!-- CTA Button -->
+          <tr>
+            <td style="padding: 10px 30px 30px 30px; text-align: center;">
+              <a href="${reportUrl}" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);">
+                查看完整汇总报告 →
+              </a>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 20px 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb;">
+              <p style="margin: 0; color: #6b7280; font-size: 13px; line-height: 1.6; text-align: center;">
+                本报告由团队效能评估系统自动生成<br>
+                如有疑问，请联系系统管理员
+              </p>
+            </td>
+          </tr>
+          
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+}
+
+/**
+ * 🆕 发送汇总报告邮件
+ */
+export async function sendSummaryReportEmail(
+  recipientEmail: string,
+  recipientName: string,
+  summaryData: SummaryEmailData
+): Promise<boolean> {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Team Assessment System" <${process.env.GMAIL_USER}>`,
+      to: recipientEmail,
+      subject: `📊 ${summaryData.organizationName} - 团队效能汇总报告`,
+      html: generateSummaryReportEmailHTML(summaryData),
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Summary report email sent to: ${recipientEmail}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Failed to send summary report email:', error);
+    return false;
+  }
+}
+
 export default {
   verifyEmailConfig,
   sendPersonalReportEmail,
   sendBulkPersonalReports,
+  sendReminderEmail,
+  sendBulkReminderEmails,
+  sendInvitationEmail,
+  sendBulkInvitationEmails,
+  generateSummaryReportEmailHTML,
+  sendSummaryReportEmail,
 };
-
-
-
-
-
-
