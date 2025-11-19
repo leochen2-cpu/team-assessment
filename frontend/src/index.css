@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* 简化的全局样式 - 只保留必要的重置 */
 
 :root {

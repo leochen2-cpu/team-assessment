@@ -53,7 +53,7 @@ export const DimensionChart: React.FC<DimensionChartProps> = ({
       return (
         <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3">
           <p className="font-semibold text-gray-900">{data.payload.dimension}</p>
-          <p className="text-blue-600 font-bold text-lg">{data.value.toFixed(1)} 分</p>
+          <p className="text-blue-600 font-bold text-lg">{data.value.toFixed(1)} Points</p>
         </div>
       );
     }
@@ -64,7 +64,7 @@ export const DimensionChart: React.FC<DimensionChartProps> = ({
   if (type === 'bar') {
     return (
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">📈 维度表现对比</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">📈 Dimensional performance comparison</h3>
         <ResponsiveContainer width="100%" height={height}>
           <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -78,7 +78,7 @@ export const DimensionChart: React.FC<DimensionChartProps> = ({
             <YAxis
               domain={[0, 100]}
               tick={{ fill: '#6b7280', fontSize: 12 }}
-              label={{ value: '分数', angle: -90, position: 'insideLeft', fill: '#6b7280' }}
+              label={{ value: 'Score', angle: -90, position: 'insideLeft', fill: '#6b7280' }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Bar
@@ -96,7 +96,7 @@ export const DimensionChart: React.FC<DimensionChartProps> = ({
   // 雷达图
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">🎯 维度雷达图</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">🎯 Dimensional Radar Chart</h3>
       <ResponsiveContainer width="100%" height={height}>
         <RadarChart data={chartData}>
           <PolarGrid stroke="#e5e7eb" />
@@ -110,7 +110,7 @@ export const DimensionChart: React.FC<DimensionChartProps> = ({
             tick={{ fill: '#6b7280', fontSize: 10 }}
           />
           <Radar
-            name="维度分数"
+            name="Dimentional scores"
             dataKey="score"
             stroke="#3b82f6"
             fill="#3b82f6"
@@ -158,7 +158,7 @@ export const TeamComparisonChart: React.FC<TeamComparisonChartProps> = ({
         <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3">
           <p className="font-semibold text-gray-900">{data.payload.teamName}</p>
           <p className="text-blue-600 font-bold text-lg">
-            {data.value.toFixed(1)} 分
+            {data.value.toFixed(1)} Points
           </p>
         </div>
       );
@@ -168,7 +168,7 @@ export const TeamComparisonChart: React.FC<TeamComparisonChartProps> = ({
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">🏆 团队分数排名</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">🏆 Team score ranking</h3>
       <ResponsiveContainer width="100%" height={height}>
         <BarChart
           data={chartData}
@@ -186,7 +186,7 @@ export const TeamComparisonChart: React.FC<TeamComparisonChartProps> = ({
             domain={[0, 100]}
             tick={{ fill: '#6b7280', fontSize: 12 }}
             label={{
-              value: '团队分数',
+              value: 'Team score',
               angle: -90,
               position: 'insideLeft',
               fill: '#6b7280',

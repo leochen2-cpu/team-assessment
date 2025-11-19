@@ -65,9 +65,9 @@ export const SummaryStats: React.FC<SummaryStatsProps> = ({
 
   // 健康等级的中文翻译
   const gradeMap: Record<string, string> = {
-    Exceptional: '卓越',
-    Strong: '优秀',
-    Developing: '良好',
+    Exceptional: 'Exceptional',
+    Strong: 'Strong',
+    Developing: 'Good',
     'Needs Attention': '需要关注',
   };
   const gradeChinese = gradeMap[healthGrade] || healthGrade;
@@ -76,9 +76,9 @@ export const SummaryStats: React.FC<SummaryStatsProps> = ({
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {/* 平均分数 */}
       <StatCard
-        title="整体平均分数"
+        title="Overall average score"
         value={averageScore.toFixed(1)}
-        subtitle={`健康等级: ${gradeChinese}`}
+        subtitle={`Healthy Level: ${gradeChinese}`}
         icon="📊"
         colorClass={getScoreColorClass(averageScore)}
         bgColorClass={getScoreBgColorClass(averageScore)}
@@ -86,7 +86,7 @@ export const SummaryStats: React.FC<SummaryStatsProps> = ({
 
       {/* 最高分 */}
       <StatCard
-        title="最高分"
+        title="Highest score"
         value={highestScore.toFixed(1)}
         icon="🏆"
         colorClass="text-green-600"
@@ -95,7 +95,7 @@ export const SummaryStats: React.FC<SummaryStatsProps> = ({
 
       {/* 最低分 */}
       <StatCard
-        title="最低分"
+        title="Lowest score"
         value={lowestScore.toFixed(1)}
         icon="📉"
         colorClass="text-yellow-600"
@@ -104,9 +104,9 @@ export const SummaryStats: React.FC<SummaryStatsProps> = ({
 
       {/* 完成率 */}
       <StatCard
-        title="完成率"
+        title="Completion rate"
         value={`${completionRate}%`}
-        subtitle={`${completedTeams} / ${totalTeams} 团队`}
+        subtitle={`${completedTeams} / ${totalTeams} Team`}
         icon="✅"
         colorClass="text-blue-600"
         bgColorClass="bg-blue-50"
@@ -137,11 +137,11 @@ export const OrganizationStats: React.FC<OrganizationStatsProps> = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <StatCard
-        title="总组织数"
+        title="Total organization count"
         value={totalOrganizations}
         subtitle={
           activeOrganizations !== undefined
-            ? `${activeOrganizations} 个活跃`
+            ? `${activeOrganizations} Active`
             : undefined
         }
         icon="🏢"
@@ -150,16 +150,16 @@ export const OrganizationStats: React.FC<OrganizationStatsProps> = ({
       />
 
       <StatCard
-        title="总评估数"
+        title="Total assessment count"
         value={totalAssessments}
-        subtitle={`${completedAssessments} 已完成`}
+        subtitle={`${completedAssessments} Completed`}
         icon="📋"
         colorClass="text-blue-600"
         bgColorClass="bg-blue-50"
       />
 
       <StatCard
-        title="已完成评估"
+        title="Total completed count"
         value={completedAssessments}
         icon="✅"
         colorClass="text-green-600"
@@ -167,7 +167,7 @@ export const OrganizationStats: React.FC<OrganizationStatsProps> = ({
       />
 
       <StatCard
-        title="完成率"
+        title="Completion rate"
         value={`${completionRate}%`}
         icon="📊"
         colorClass="text-indigo-600"

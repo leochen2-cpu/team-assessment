@@ -230,8 +230,8 @@ export function calculateTeamScore(
  * 获取团队健康等级
  */
 export function getTeamHealthGrade(score: number): string {
-  if (score >= 80) return '卓越团队';
-  if (score >= 65) return '健康团队';
-  if (score >= 50) return '风险团队';
-  return '功能障碍';
+  if (score >= 80) return 'Exceptional Team';
+  if (score >= 65) return 'Healthy Team';
+  if (score >= 50) return 'Risk Team';
+  return 'Error';
 }

@@ -24,7 +24,7 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ insights }) => {
             <span className="text-3xl">💡</span>
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                总体概述
+                insight summary
               </h3>
               <p className="text-gray-700 leading-relaxed">{insights.summary}</p>
             </div>
@@ -39,7 +39,7 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ insights }) => {
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-2xl">💪</span>
-              <h3 className="text-lg font-semibold text-gray-900">组织优势</h3>
+              <h3 className="text-lg font-semibold text-gray-900">organization strengths</h3>
             </div>
             <ul className="space-y-3">
               {insights.strengths.map((strength, index) => (
@@ -62,7 +62,7 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ insights }) => {
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-2xl">🎯</span>
-              <h3 className="text-lg font-semibold text-gray-900">关注领域</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Areas of concern</h3>
             </div>
             <ul className="space-y-3">
               {insights.concerns.map((concern, index) => (
@@ -88,20 +88,20 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ insights }) => {
             <span className="text-3xl">🏆</span>
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                最佳表现团队
+                Best performing team
               </h3>
               <div className="flex items-center gap-4 mb-2">
                 <span className="text-xl font-bold text-gray-900">
                   {insights.topPerformer.teamName}
                 </span>
                 <span className="text-2xl font-bold text-yellow-600">
-                  {insights.topPerformer.score.toFixed(1)} 分
+                  {insights.topPerformer.score.toFixed(1)} Points
                 </span>
               </div>
               {insights.topPerformer.standoutDimensions &&
                 insights.topPerformer.standoutDimensions.length > 0 && (
                   <div className="flex items-center gap-2 mt-3">
-                    <span className="text-sm text-gray-600">突出维度:</span>
+                    <span className="text-sm text-gray-600">Highlight dimensions:</span>
                     {insights.topPerformer.standoutDimensions.map((dim, index) => (
                       <span
                         key={index}
@@ -122,7 +122,7 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ insights }) => {
         <div className="bg-white rounded-lg border border-red-200 p-6">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-2xl">⚠️</span>
-            <h3 className="text-lg font-semibold text-gray-900">需要关注的团队</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Teams that need attention</h3>
           </div>
           <div className="space-y-4">
             {insights.needsAttention.map((team, index) => (
@@ -135,7 +135,7 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ insights }) => {
                     {team.teamName}
                   </span>
                   <span className="text-lg font-bold text-red-600">
-                    {team.score.toFixed(1)} 分
+                    {team.score.toFixed(1)} Points
                   </span>
                 </div>
                 {team.issues.length > 0 && (
@@ -162,7 +162,7 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ insights }) => {
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-2xl">📋</span>
-            <h3 className="text-lg font-semibold text-gray-900">改进建议</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Improvement suggestions</h3>
           </div>
           <ol className="space-y-3">
             {insights.recommendations.map((recommendation, index) => (
@@ -185,7 +185,7 @@ export const InsightsPanel: React.FC<InsightsPanelProps> = ({ insights }) => {
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-2xl">📊</span>
-            <h3 className="text-lg font-semibold text-gray-900">跨团队趋势</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Cross-team trends</h3>
           </div>
           <ul className="space-y-2">
             {insights.crossTeamTrends.map((trend, index) => (

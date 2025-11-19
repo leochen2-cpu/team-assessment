@@ -66,7 +66,7 @@ export const OrganizationSummaryPage: React.FC = () => {
         setReportData(report.data);
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '加载失败';
+      const errorMessage = err instanceof Error ? err.message : 'Failed to Load';
       setError(errorMessage);
       console.error('Failed to load data:', err);
     } finally {
@@ -95,7 +95,7 @@ export const OrganizationSummaryPage: React.FC = () => {
       
       alert('报告生成成功！');
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '生成报告失败';
+      const errorMessage = err instanceof Error ? err.message : 'Failed to generate report';
       setError(errorMessage);
       alert(`错误：${errorMessage}`);
       console.error('Failed to generate report:', err);
@@ -109,7 +109,7 @@ export const OrganizationSummaryPage: React.FC = () => {
     if (!id) return;
 
     const confirmed = window.confirm(
-      `确定要发送汇总报告邮件给 ${organization?.leaderName} (${organization?.leaderEmail}) 吗？`
+      `Are you sure to send report to ${organization?.leaderName} (${organization?.leaderEmail})`
     );
 
     if (!confirmed) return;
@@ -117,10 +117,10 @@ export const OrganizationSummaryPage: React.FC = () => {
     try {
       setIsSendingEmail(true);
       await sendSummaryReportEmail(id, []);
-      alert('邮件发送成功！');
+      alert('Email has been sent!');
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '发送邮件失败';
-      alert(`错误：${errorMessage}`);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to send email';
+      alert(`Error：${errorMessage}`);
       console.error('Failed to send email:', err);
     } finally {
       setIsSendingEmail(false);
@@ -168,7 +168,7 @@ export const OrganizationSummaryPage: React.FC = () => {
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             />
           </svg>
-          <p className="text-gray-600">加载中...</p>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -184,7 +184,7 @@ export const OrganizationSummaryPage: React.FC = () => {
             onClick={fetchData}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
           >
-            重试
+            Retry
           </button>
         </div>
       </div>
@@ -193,9 +193,9 @@ export const OrganizationSummaryPage: React.FC = () => {
 
   // 面包屑导航
   const breadcrumbItems = [
-    { label: '组织管理', path: '/admin/organizations', icon: '🏢' },
-    { label: organization?.name || '加载中...', path: `/admin/organization/${id}` },
-    { label: '汇总报告' },
+    { label: 'Manage organization', path: '/admin/organizations', icon: '🏢' },
+    { label: organization?.name || 'Loading...', path: `/admin/organization/${id}` },
+    { label: 'View report' },
   ];
 
   return (
@@ -208,10 +208,10 @@ export const OrganizationSummaryPage: React.FC = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              {organization?.name} - 汇总报告
+              {organization?.name} - Report
             </h1>
             <p className="mt-2 text-gray-600">
-              组织负责人: {organization?.leaderName}
+              Organization manager: {organization?.leaderName}
             </p>
           </div>
 
@@ -226,7 +226,7 @@ export const OrganizationSummaryPage: React.FC = () => {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  导出 CSV
+                  Export as CSV
                 </button>
                 <button
                   onClick={printReport}
@@ -235,7 +235,7 @@ export const OrganizationSummaryPage: React.FC = () => {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                   </svg>
-                  打印
+                  Print
                 </button>
                 <button
                   onClick={handleSendEmail}
@@ -248,14 +248,14 @@ export const OrganizationSummaryPage: React.FC = () => {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
-                      发送中...
+                      Sending...
                     </>
                   ) : (
                     <>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
-                      发送邮件
+                      Send email
                     </>
                   )}
                 </button>
@@ -272,14 +272,14 @@ export const OrganizationSummaryPage: React.FC = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  生成中...
+                  Generating...
                 </>
               ) : (
                 <>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
-                  {reportData ? '重新生成' : '生成报告'}
+                  {reportData ? 'Regenerate' : 'Generate report'}
                 </>
               )}
             </button>
@@ -292,25 +292,25 @@ export const OrganizationSummaryPage: React.FC = () => {
             <div className="flex items-start gap-3">
               <span className="text-2xl">ℹ️</span>
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 mb-2">报告状态</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">Report status</h3>
                 <p className="text-gray-700 mb-3">{status.recommendation}</p>
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div>
-                    <span className="text-gray-500">总评估数:</span>
+                    <span className="text-gray-500">Total reports:</span>
                     <span className="ml-2 font-semibold">{status.totalAssessments}</span>
                   </div>
                   <div>
-                    <span className="text-gray-500">已完成:</span>
+                    <span className="text-gray-500">Completed:</span>
                     <span className="ml-2 font-semibold">{status.completedAssessments}</span>
                   </div>
                   <div>
-                    <span className="text-gray-500">完成率:</span>
+                    <span className="text-gray-500">Completion rate:</span>
                     <span className="ml-2 font-semibold">{status.completionRate}%</span>
                   </div>
                 </div>
                 {!status.canGenerate && (
                   <p className="mt-3 text-red-600 text-sm">
-                    ⚠️ 至少需要一个已完成的评估才能生成报告
+                    ⚠️ You at least need one assessment completed to generate report
                   </p>
                 )}
               </div>

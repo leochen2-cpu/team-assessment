@@ -99,17 +99,17 @@ export const OrganizationsPage: React.FC = () => {
       
       if (modalMode === 'create') {
         await createOrganization(formData);
-        alert('组织创建成功！');
+        alert('Organization has been created');
       } else if (modalMode === 'edit' && selectedOrg) {
         await updateOrganization(selectedOrg.id, formData);
-        alert('组织更新成功！');
+        alert('Organization has been updated');
       }
       
       await fetchOrganizations();
       closeModal();
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '操作失败';
-      alert(`错误：${errorMessage}`);
+      const errorMessage = err instanceof Error ? err.message : 'Error';
+      alert(`Error：${errorMessage}`);
       console.error('Submit error:', err);
     } finally {
       setIsSubmitting(false);
@@ -123,12 +123,12 @@ export const OrganizationsPage: React.FC = () => {
     try {
       setIsSubmitting(true);
       await deleteOrganization(selectedOrg.id, false); // 软删除
-      alert('组织已删除！');
+      alert('Organization has been deletd');
       await fetchOrganizations();
       closeModal();
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '删除失败';
-      alert(`错误：${errorMessage}`);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete';
+      alert(`Error：${errorMessage}`);
       console.error('Delete error:', err);
     } finally {
       setIsSubmitting(false);
@@ -170,8 +170,8 @@ export const OrganizationsPage: React.FC = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">组织管理</h1>
-              <p className="mt-2 text-gray-600">管理组织结构和团队评估</p>
+              <h1 className="text-3xl font-bold text-gray-900">Organization Management</h1>
+              <p className="mt-2 text-gray-600">Organization structure and team assessment</p>
             </div>
             <button
               onClick={() => handleCreate(null)}
@@ -190,7 +190,7 @@ export const OrganizationsPage: React.FC = () => {
                   d="M12 4v16m8-8H4"
                 />
               </svg>
-              新建组织
+              Create
             </button>
           </div>
 
@@ -202,7 +202,7 @@ export const OrganizationsPage: React.FC = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="搜索组织名称或负责人..."
+                  placeholder="Search for group name or manager..."
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
                 <svg
@@ -255,7 +255,7 @@ export const OrganizationsPage: React.FC = () => {
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 />
               </svg>
-              <p className="text-gray-600">加载中...</p>
+              <p className="text-gray-600">Loading...</p>
             </div>
           </div>
         ) : error ? (
@@ -265,7 +265,7 @@ export const OrganizationsPage: React.FC = () => {
               onClick={fetchOrganizations}
               className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
             >
-              重试
+              Retry
             </button>
           </div>
         ) : (
@@ -295,27 +295,27 @@ export const OrganizationsPage: React.FC = () => {
                 onClick={handleViewSummary.bind(null, selectedOrg)}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
               >
-                查看汇总报告
+                View report
               </button>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
               <div>
-                <p className="text-sm text-gray-500">负责人</p>
+                <p className="text-sm text-gray-500">Manager</p>
                 <p className="font-medium text-gray-900">{selectedOrg.leaderName}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">邮箱</p>
+                <p className="text-sm text-gray-500">Email</p>
                 <p className="font-medium text-gray-900">{selectedOrg.leaderEmail}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">评估数量</p>
+                <p className="text-sm text-gray-500">Assessment Count</p>
                 <p className="font-medium text-gray-900">
                   {selectedOrg.completedAssessmentCount || 0} / {selectedOrg.assessmentCount || 0}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">子组织</p>
+                <p className="text-sm text-gray-500">Sub-organization</p>
                 <p className="font-medium text-gray-900">
                   {selectedOrg.children?.length || 0}
                 </p>
@@ -331,7 +331,7 @@ export const OrganizationsPage: React.FC = () => {
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
               <h2 className="text-xl font-semibold text-gray-900">
-                {modalMode === 'create' ? '创建组织' : '编辑组织'}
+                {modalMode === 'create' ? 'Create' : 'Edit'}
               </h2>
             </div>
             <div className="px-6 py-4">
@@ -353,12 +353,12 @@ export const OrganizationsPage: React.FC = () => {
       {modalMode === 'delete' && selectedOrg && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">确认删除</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Comfirm Deletion</h2>
             <p className="text-gray-600 mb-6">
-              确定要删除组织 <strong>{selectedOrg.name}</strong> 吗？
+              Do you want to delete <strong>{selectedOrg.name}</strong> ?
               {selectedOrg.children && selectedOrg.children.length > 0 && (
                 <span className="block mt-2 text-red-600">
-                  注意：该组织有 {selectedOrg.children.length} 个子组织
+                  Notice：This organization has {selectedOrg.children.length} sub-organizations
                 </span>
               )}
             </p>
@@ -368,14 +368,14 @@ export const OrganizationsPage: React.FC = () => {
                 disabled={isSubmitting}
                 className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                取消
+                Cancel
               </button>
               <button
                 onClick={handleDelete}
                 disabled={isSubmitting}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
               >
-                {isSubmitting ? '删除中...' : '确认删除'}
+                {isSubmitting ? 'Deleting...' : 'Comfirm Deletion'}
               </button>
             </div>
           </div>

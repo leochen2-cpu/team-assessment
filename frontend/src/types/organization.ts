@@ -186,12 +186,12 @@ export interface GenerateSummaryResponse {
 // ============================================
 
 export const DIMENSION_NAMES: Record<keyof DimensionScores, string> = {
-  teamConnection: '团队连接性',
-  appreciation: '欣赏认可',
-  responsiveness: '响应及时性',
-  trustPositivity: '信任与积极性',
-  conflictManagement: '冲突管理',
-  goalSupport: '目标支持',
+  teamConnection: 'Team Connection',
+  appreciation: 'Appreciation',
+  responsiveness: 'Responsiveness',
+  trustPositivity: 'Trust Positivity',
+  conflictManagement: 'Conflict Management',
+  goalSupport: 'Goal Support',
 };
 
 export const DIMENSION_NAMES_EN: Record<keyof DimensionScores, string> = {
@@ -219,25 +219,25 @@ export const HEALTH_GRADE_CONFIG: Record<
   }
 > = {
   Exceptional: {
-    label: '卓越',
+    label: 'Exceptional',
     color: 'text-green-600',
     bgColor: 'bg-green-50',
     minScore: 90,
   },
   Strong: {
-    label: '优秀',
+    label: 'Strong',
     color: 'text-blue-600',
     bgColor: 'bg-blue-50',
     minScore: 75,
   },
   Developing: {
-    label: '良好',
+    label: 'Developing',
     color: 'text-yellow-600',
     bgColor: 'bg-yellow-50',
     minScore: 50,
   },
   'Needs Attention': {
-    label: '需要关注',
+    label: 'Needs Attention',
     color: 'text-red-600',
     bgColor: 'bg-red-50',
     minScore: 0,

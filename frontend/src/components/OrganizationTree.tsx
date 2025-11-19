@@ -103,19 +103,19 @@ const TreeNode: React.FC<TreeNodeProps> = ({
               </h4>
               {!node.isActive && (
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
-                  已禁用
+                  Disabled
                 </span>
               )}
             </div>
             <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
-              <span>负责人: {node.leaderName}</span>
+              <span>Manager: {node.leaderName}</span>
               {node.assessmentCount !== undefined && (
                 <span>
-                  评估: {node.completedAssessmentCount || 0}/{node.assessmentCount || 0}
+                  Assessment: {node.completedAssessmentCount || 0}/{node.assessmentCount || 0}
                 </span>
               )}
               {hasChildren && (
-                <span>子组织: {node.children!.length}</span>
+                <span>Sub-organization: {node.children!.length}</span>
               )}
             </div>
           </div>
@@ -130,7 +130,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
                 onAddChild(node);
               }}
               className="p-1.5 text-green-600 hover:bg-green-50 rounded-md transition-colors"
-              title="添加子组织"
+              title="Create sub-organization"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -149,7 +149,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
                 onEdit(node);
               }}
               className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-              title="编辑"
+              title="Edit"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -168,7 +168,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({
                 onDelete(node);
               }}
               className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors"
-              title="删除"
+              title="Delete"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -246,8 +246,8 @@ export const OrganizationTree: React.FC<OrganizationTreeProps> = ({
     return (
       <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
         <div className="text-gray-400 text-5xl mb-4">📁</div>
-        <p className="text-gray-500 mb-2">暂无组织</p>
-        <p className="text-sm text-gray-400">点击上方"新建组织"按钮创建第一个组织</p>
+        <p className="text-gray-500 mb-2">No organization yet</p>
+        <p className="text-sm text-gray-400">Click the "Create" button above to create your first organization.</p>
       </div>
     );
   }

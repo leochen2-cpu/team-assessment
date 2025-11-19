@@ -98,12 +98,12 @@ function getHealthGrade(score: number): string {
  */
 function getDimensionNameChinese(key: string): string {
   const names: Record<string, string> = {
-    teamConnection: '团队连接性',
-    appreciation: '欣赏认可',
-    responsiveness: '响应及时性',
-    trustPositivity: '信任与积极性',
-    conflictManagement: '冲突管理',
-    goalSupport: '目标支持',
+    teamConnection: 'Team Connection',
+    appreciation: 'Appreciation',
+    responsiveness: 'Responsiveness',
+    trustPositivity: 'Trust Positivity',
+    conflictManagement: 'Conflict Management',
+    goalSupport: 'Goal Support',
   };
   return names[key] || key;
 }
@@ -163,7 +163,7 @@ function generateInsights(
   };
 
   if (teamComparisons.length === 0) {
-    insights.summary = '暂无已完成的评估数据';
+    insights.summary = 'No completed assessment data available.';
     return insights;
   }
 
@@ -176,10 +176,10 @@ function generateInsights(
   };
 
   const overallGrade = getHealthGrade(averageScore);
-  insights.summary = `整体表现${overallGrade === 'Exceptional' ? '卓越' : overallGrade === 'Strong' ? '优秀' : overallGrade === 'Developing' ? '良好' : '需要关注'}，平均分数 ${averageScore.toFixed(1)}。`;
+  insights.summary = `Overall team performance: ${overallGrade === 'Exceptional' ? 'Exceptional' : overallGrade === 'Strong' ? 'Strong' : overallGrade === 'Developing' ? 'Developing' : 'Needs attention'}. Overall Score: ${averageScore.toFixed(1)}.`;
 
   if (gradeDistribution.exceptional > 0) {
-    insights.summary += ` 有 ${gradeDistribution.exceptional} 个团队表现卓越。`;
+    insights.summary += ` There are ${gradeDistribution.exceptional} team(s) performing exceptional`;
   }
 
   // 2. 识别优势
@@ -191,7 +191,7 @@ function generateInsights(
   dimensionEntries.slice(0, 2).forEach(([key, value]) => {
     if (value >= 80) {
       insights.strengths.push(
-        `${getDimensionNameChinese(key)}表现突出（平均 ${value.toFixed(1)} 分）`
+        `${getDimensionNameChinese(key)} is outstanding（Average of ${value.toFixed(1)} points）`
       );
     }
   });
@@ -202,7 +202,7 @@ function generateInsights(
     teamComparisons.length;
   if (avgParticipation >= 0.9) {
     insights.strengths.push(
-      `评估参与率高（平均 ${(avgParticipation * 100).toFixed(0)}%）`
+      `High participation rate in assessments（Average of ${(avgParticipation * 100).toFixed(0)}%）`
     );
   }
 
@@ -210,7 +210,7 @@ function generateInsights(
   const scores = teamComparisons.map((t) => t.teamScore);
   const stdDev = calculateStandardDeviation(scores);
   if (stdDev < 8) {
-    insights.strengths.push('团队表现一致性良好');
+    insights.strengths.push('The team performed consistently well.');
   }
 
   // 3. 识别关注点
@@ -218,7 +218,7 @@ function generateInsights(
   dimensionEntries.slice(-2).forEach(([key, value]) => {
     if (value < 75) {
       insights.concerns.push(
-        `${getDimensionNameChinese(key)}有待提升（平均 ${value.toFixed(1)} 分）`
+        `${getDimensionNameChinese(key)} needs to be improved（Average of ${value.toFixed(1)} points）`
       );
     }
   });
@@ -229,13 +229,13 @@ function generateInsights(
   );
   if (lowParticipationTeams.length > 0) {
     insights.concerns.push(
-      `${lowParticipationTeams.length} 个团队参与率偏低（<85%）`
+      `${lowParticipationTeams.length} teams have low participation rate（<85%）`
     );
   }
 
   // 团队间差异大
   if (stdDev > 12) {
-    insights.concerns.push('团队间表现差异较大，需关注一致性');
+    insights.concerns.push('Significant performance differences exist between teams; consistency needs to be addressed.');
   }
 
   // 4. 识别最佳表现者
@@ -271,16 +271,16 @@ function generateInsights(
     // 分析具体问题
     Object.entries(team.dimensionScores).forEach(([key, score]) => {
       if (score < 70) {
-        issues.push(`${getDimensionNameChinese(key)}偏低（${score.toFixed(1)}分）`);
+        issues.push(`${getDimensionNameChinese(key)} is low（${score.toFixed(1)} points）`);
       }
     });
 
     if (team.participationRate < 0.85) {
-      issues.push(`参与率低（${(team.participationRate * 100).toFixed(0)}%）`);
+      issues.push(`Low participation rate（${(team.participationRate * 100).toFixed(0)}%）`);
     }
 
     if (team.warningSignsAverage && team.warningSignsAverage > 25) {
-      issues.push('警告信号较高');
+      issues.push('Warning signs are high');
     }
 
     insights.needsAttention.push({
@@ -295,32 +295,32 @@ function generateInsights(
   const weakestDimension = dimensionEntries[dimensionEntries.length - 1];
   if (weakestDimension[1] < 75) {
     insights.recommendations.push(
-      `组织${getDimensionNameChinese(weakestDimension[0])}培训或研讨会`
+      `Organize ${getDimensionNameChinese(weakestDimension[0])} training or seminars`
     );
   }
 
   // 基于最佳团队
   if (topTeam.teamScore >= 85) {
     insights.recommendations.push(
-      `分享 ${topTeam.teamName} 的最佳实践给其他团队`
+      `Share ${topTeam.teamName}'s best practices for other teams`
     );
   }
 
   // 基于需要关注的团队
   if (insights.needsAttention.length > 0) {
     insights.recommendations.push(
-      `为表现较弱的团队提供针对性支持和指导`
+      `Provide targeted support and guidance to weaker teams.`
     );
   }
 
   // 基于参与率
   if (avgParticipation < 0.9) {
-    insights.recommendations.push('提高评估参与率，确保数据全面性');
+    insights.recommendations.push('Increase participation in assessments and ensure data comprehensiveness');
   }
 
   // 基于一致性
   if (stdDev > 12) {
-    insights.recommendations.push('分析团队间差异原因，促进跨团队学习');
+    insights.recommendations.push('Analyze the reasons for differences between teams');
   }
 
   // 7. 跨团队趋势
@@ -331,7 +331,7 @@ function generateInsights(
 
   if (strongDimensions.length > 0) {
     insights.crossTeamTrends?.push(
-      `所有团队在${strongDimensions.join('、')}方面表现良好`
+      `All teams perform well on ${strongDimensions.join('; ')}`
     );
   }
 
@@ -342,7 +342,7 @@ function generateInsights(
 
   if (weakDimensions.length > 0) {
     insights.crossTeamTrends?.push(
-      `${weakDimensions.join('、')}是跨团队的共同成长领域`
+      `All teams should work on ${weakDimensions.join(': ')}`
     );
   }
 
@@ -356,7 +356,7 @@ function generateInsights(
       highTrustTeams.length;
     if (avgHighTrustScore > averageScore + 5) {
       insights.crossTeamTrends?.push(
-        '信任度高的团队往往整体表现更好'
+        'Teams with high trust levels tend to perform better overall.'
       );
     }
   }
@@ -399,7 +399,7 @@ export async function generateSummaryReport(
     });
 
     if (!organization) {
-      throw new Error('组织不存在');
+      throw new Error('Organization not found');
     }
 
     // 2. 筛选已完成的评估
@@ -408,7 +408,7 @@ export async function generateSummaryReport(
     );
 
     if (completedAssessments.length === 0) {
-      throw new Error('该组织下没有已完成的评估');
+      throw new Error('No assessments have been completed under this organization.');
     }
 
     const totalTeams = organization.assessments.length;
@@ -452,7 +452,7 @@ export async function generateSummaryReport(
             warningScores.reduce((sum, s) => sum + s, 0) / warningScores.length;
         }
       } catch (error) {
-        console.warn('计算警告信号失败:', error);
+        console.warn('Calculation of warning signals failed:', error);
       }
 
       return {
@@ -543,7 +543,7 @@ export async function generateSummaryReport(
 
     return reportData;
   } catch (error) {
-    console.error('生成汇总报告失败:', error);
+    console.error('Failed to generate summary report:', error);
     throw error;
   }
 }
@@ -576,7 +576,7 @@ export async function getSummaryReport(
       insights: JSON.parse(report.insights),
     };
   } catch (error) {
-    console.error('获取汇总报告失败:', error);
+    console.error('Failed to retrieve summary report:', error);
     throw error;
   }
 }

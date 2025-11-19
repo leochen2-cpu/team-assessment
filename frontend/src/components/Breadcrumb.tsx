@@ -83,7 +83,7 @@ export const generateOrgBreadcrumbs = (
 ): BreadcrumbItem[] => {
   const items: BreadcrumbItem[] = [
     {
-      label: '组织管理',
+      label: 'Organization management',
       path: '/admin/organizations',
       icon: '🏢',
     },

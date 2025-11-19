@@ -247,9 +247,9 @@ router.get('/:id/summary/status', async (req: Request, res: Response) => {
         : null,
       recommendation: canGenerate
         ? hasExistingReport
-          ? '可以重新生成汇总报告'
-          : '可以生成汇总报告'
-        : '请等待至少一个团队完成评估',
+          ? 'The summary report can be regenerated.'
+          : 'Summary reports can be generated.'
+        : 'Please wait for at least one team to complete the evaluation.',
     };
 
     res.json({
@@ -257,11 +257,11 @@ router.get('/:id/summary/status', async (req: Request, res: Response) => {
       data: status,
     });
   } catch (error) {
-    console.error('检查汇总报告状态失败:', error);
+    console.error('Failed to check summary report status:', error);
     res.status(500).json({
       success: false,
-      message: '检查汇总报告状态失败',
-      error: error instanceof Error ? error.message : '未知错误',
+      message: 'Failed to check summary report status',
+      error: error instanceof Error ? error.message : 'Unknown Error',
     });
   }
 });
@@ -281,7 +281,7 @@ router.delete('/:id/summary', async (req: Request, res: Response) => {
     if (!report) {
       return res.status(404).json({
         success: false,
-        message: '汇总报告不存在',
+        message: 'Summary report does not exist',
       });
     }
 
@@ -291,14 +291,14 @@ router.delete('/:id/summary', async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      message: '汇总报告已删除',
+      message: 'The summary report has been deleted.',
     });
   } catch (error) {
-    console.error('删除汇总报告失败:', error);
+    console.error('Deleting summary report failed:', error);
     res.status(500).json({
       success: false,
-      message: '删除汇总报告失败',
-      error: error instanceof Error ? error.message : '未知错误',
+      message: 'Deleting summary report failed',
+      error: error instanceof Error ? error.message : 'Unknown Error',
     });
   }
 });

@@ -164,10 +164,10 @@ export function formatScore(score: number): string {
  */
 export function getHealthGradeLabel(grade: string): string {
   const gradeMap: Record<string, string> = {
-    Exceptional: '卓越',
-    Strong: '优秀',
-    Developing: '良好',
-    'Needs Attention': '需要关注',
+    Exceptional: 'Exceptional',
+    Strong: 'Strong',
+    Developing: 'Developing',
+    'Needs Attention': 'Needs Attention',
   };
   return gradeMap[grade] || grade;
 }
@@ -178,19 +178,19 @@ export function getHealthGradeLabel(grade: string): string {
 export function exportToCSV(data: SummaryReportData, organizationName: string): void {
   // CSV 表头
   const headers = [
-    '排名',
-    '团队名称',
-    '团队分数',
-    '健康等级',
-    '参与人数',
-    '总人数',
-    '参与率',
-    '团队连接性',
-    '欣赏认可',
-    '响应及时性',
-    '信任与积极性',
-    '冲突管理',
-    '目标支持',
+    'Ranking',
+    'Team Name',
+    'Team Score',
+    'Health Level',
+    'Participation Count',
+    'Total Count',
+    'Participate Rate',
+    'Team Connection',
+    'Appreciation',
+    'Responsiveness',
+    'Trust and positivity',
+    'Conflict management',
+    'Goal Support',
   ];
 
   // CSV 数据行
@@ -224,7 +224,7 @@ export function exportToCSV(data: SummaryReportData, organizationName: string): 
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
   link.setAttribute('href', url);
-  link.setAttribute('download', `${organizationName}_汇总报告_${new Date().toISOString().slice(0, 10)}.csv`);
+  link.setAttribute('download', `${organizationName}_Summary Report_${new Date().toISOString().slice(0, 10)}.csv`);
   link.style.visibility = 'hidden';
   document.body.appendChild(link);
   link.click();
@@ -241,7 +241,7 @@ export function exportToJSON(data: SummaryReportData, organizationName: string):
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
   link.setAttribute('href', url);
-  link.setAttribute('download', `${organizationName}_汇总报告_${new Date().toISOString().slice(0, 10)}.json`);
+  link.setAttribute('download', `${organizationName}_Summary Report_${new Date().toISOString().slice(0, 10)}.json`);
   link.style.visibility = 'hidden';
   document.body.appendChild(link);
   link.click();

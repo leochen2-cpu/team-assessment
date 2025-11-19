@@ -699,12 +699,12 @@ export function generateSummaryReportEmailHTML(data: SummaryEmailData): string {
   // 健康等级的中文翻译
   const healthGradeChinese =
     healthGrade === 'Exceptional'
-      ? '卓越'
+      ? 'Exceptional'
       : healthGrade === 'Strong'
-      ? '优秀'
+      ? 'Strong'
       : healthGrade === 'Developing'
-      ? '良好'
-      : '需要关注';
+      ? 'Developing'
+      : 'Needs attention';
 
   return `
 <!DOCTYPE html>
@@ -855,12 +855,12 @@ export function generateSummaryReportEmailHTML(data: SummaryEmailData): string {
                 ${Object.entries(dimensionAverages)
                   .map(([key, value]) => {
                     const dimensionNames: Record<string, string> = {
-                      teamConnection: '团队连接性',
-                      appreciation: '欣赏认可',
-                      responsiveness: '响应及时性',
-                      trustPositivity: '信任与积极性',
-                      conflictManagement: '冲突管理',
-                      goalSupport: '目标支持',
+                      teamConnection: 'Team Connection',
+                      appreciation: 'Appreciation',
+                      responsiveness: 'Responsiveness',
+                      trustPositivity: 'Trust Positivity',
+                      conflictManagement: 'Conflict Management',
+                      goalSupport: 'Goal Support',
                     };
                     const barWidth = (value / 100) * 100;
                     const barColor = value >= 80 ? '#10b981' : value >= 70 ? '#3b82f6' : '#f59e0b';

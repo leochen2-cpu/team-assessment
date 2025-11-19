@@ -78,7 +78,7 @@ export const TeamComparisonTable: React.FC<TeamComparisonTableProps> = ({
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">🏆 团队表现排名</h3>
+        <h3 className="text-lg font-semibold text-gray-900">🏆 Team performance ranking</h3>
       </div>
 
       <div className="overflow-x-auto">
@@ -86,43 +86,43 @@ export const TeamComparisonTable: React.FC<TeamComparisonTableProps> = ({
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                排名
+                Ranking
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                团队名称
+                Team name
               </th>
               <th
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 onClick={() => handleSort('teamScore')}
               >
                 <div className="flex items-center gap-2">
-                  团队分数 <SortIcon field="teamScore" />
+                  Team score <SortIcon field="teamScore" />
                 </div>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                健康等级
+                Health level
               </th>
               <th
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 onClick={() => handleSort('participationRate')}
               >
                 <div className="flex items-center gap-2">
-                  参与率 <SortIcon field="participationRate" />
+                  Participation rate <SortIcon field="participationRate" />
                 </div>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                参与人数
+                Participation count
               </th>
               <th
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 onClick={() => handleSort('completedAt')}
               >
                 <div className="flex items-center gap-2">
-                  完成时间 <SortIcon field="completedAt" />
+                  Completion time <SortIcon field="completedAt" />
                 </div>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                操作
+                Operate
               </th>
             </tr>
           </thead>
@@ -216,7 +216,7 @@ export const TeamComparisonTable: React.FC<TeamComparisonTableProps> = ({
                       onClick={() => onTeamClick?.(team.assessmentId)}
                       className="text-blue-600 hover:text-blue-900"
                     >
-                      查看详情
+                      View detail
                     </button>
                   </td>
                 </tr>
@@ -229,7 +229,7 @@ export const TeamComparisonTable: React.FC<TeamComparisonTableProps> = ({
       {/* 空状态 */}
       {teams.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-500">暂无团队数据</p>
+          <p className="text-gray-500">No team data available</p>
         </div>
       )}
     </div>

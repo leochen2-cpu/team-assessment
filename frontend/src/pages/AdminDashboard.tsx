@@ -18,16 +18,9 @@ function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // 检查登录状态
-    const isLoggedIn = localStorage.getItem('adminLoggedIn');
-    if (!isLoggedIn) {
-      navigate('/admin/login');
-      return;
-    }
-
-    fetchAssessments();
-  }, [navigate]);
+useEffect(() => {
+  fetchAssessments();
+}, []);
 
   const fetchAssessments = async () => {
     try {
@@ -48,11 +41,6 @@ function AdminDashboard() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('adminLoggedIn');
-    navigate('/admin/login');
   };
 
   const formatDate = (dateString: string) => {
@@ -105,17 +93,10 @@ function AdminDashboard() {
 
   return (
     <div className="admin-container">
-      {/* Header */}
+      {/* ✅ 简化的标题部分 */}
       <div className="admin-header">
-        <div className="header-content">
-          <div>
-            <h1>Admin Dashboard</h1>
-            <p>Manage team assessments</p>
-          </div>
-          <button onClick={handleLogout} className="btn-logout">
-            Logout
-          </button>
-        </div>
+        <h1>Admin Dashboard</h1>
+        <p>Manage team assessments</p>
       </div>
 
       {/* Main Content */}
