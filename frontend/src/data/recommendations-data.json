@@ -1,0 +1,611 @@
+{
+  "recommendations": {
+    "individual": {
+      "90-100": {
+        "category": "Thriving Team",
+        "recommendations": [
+          {
+            "id": 1,
+            "text": "Continue building trust through small daily actions: Keep acknowledging teammates' contributions, listening actively during conversations, and remembering personal details they've shared. Strong relationships need ongoing care, not just one-time efforts."
+          },
+          {
+            "id": 2,
+            "text": "Extend connection beyond your inner circle: Notice and respond positively to colleagues you interact with less frequently. When someone outside your immediate group reaches out (asks a question, shares an idea, requests help), engage meaningfully with them."
+          },
+          {
+            "id": 3,
+            "text": "Track your successful connection patterns: Notice which ways of reaching out to teammates work well. What kinds of questions do you ask? How do you offer help? What makes conversations flow? Understanding your patterns helps you repeat what works and coach others."
+          },
+          {
+            "id": 4,
+            "text": "Address small issues quickly: Even in strong relationships, minor misunderstandings happen. Clear them up immediately rather than assuming everything will be fine. Quick acknowledgment of tension (\"That came out wrong, let me try again\") prevents small problems from growing."
+          }
+        ]
+      },
+      "75-90": {
+        "category": "Solid Foundation",
+        "recommendations": [
+          {
+            "id": 1,
+            "text": "Strengthen specific relationships: Identify 2-3 colleagues where the connection feels weaker. Make deliberate efforts with them: remember details they mention, respond consistently when they reach out, ask about things they care about. Build trust one relationship at a time."
+          },
+          {
+            "id": 2,
+            "text": "Balance reaching out with responding: For one week, notice how often you initiate connection (asking questions, sharing ideas, requesting input) versus responding to others' attempts. Strong relationships require give-and-take, not one person doing all the work."
+          },
+          {
+            "id": 3,
+            "text": "Listen to feelings before solving problems: When a colleague shares frustration or concern, resist the urge to immediately problem-solve. First acknowledge their emotion: \"That sounds really frustrating\" or \"I can see why that's concerning.\" Validation before solutions strengthens trust."
+          },
+          {
+            "id": 4,
+            "text": "Practice repairing tension: When you sense distance or awkwardness with a teammate, address it directly: \"I noticed some tension earlier. Can we talk about what happened?\" Try different approaches with different people and notice what helps repair go smoothly."
+          }
+        ]
+      },
+      "50-75": {
+        "category": "Trust Erosion",
+        "recommendations": [
+          {
+            "id": 1,
+            "text": "Assess your relationship quality honestly: For each teammate, evaluate whether you've been making enough positive contributions to the relationship—or if you've made withdrawals without deposits. For relationships running on empty, develop specific plans to rebuild: remember their priorities, follow up on things they care about, respond positively to their next few attempts to connect."
+          },
+          {
+            "id": 2,
+            "text": "Respond to small connection attempts: Pay attention to small moments—when someone shares about their weekend, mentions an idea, or looks frustrated. Engage with these moments even briefly. Responding to small reaches builds trust incrementally through accumulation."
+          },
+          {
+            "id": 3,
+            "text": "Learn what matters to teammates you know least: Choose three colleagues you understand least well. Have informal conversations to learn about their work priorities, career aspirations, current challenges, and what's important to them. Knowing these details enables better connection and appropriate support."
+          },
+          {
+            "id": 4,
+            "text": "Repair relationship breaks within 24 hours: When you notice awkwardness or distance with a colleague, initiate conversation quickly. Simple formula: \"I noticed [what you observed]. I want to understand what happened. Can we talk?\" Track which approaches work with which teammates."
+          },
+          {
+            "id": 3,
+            "text": "Practice intentional connection daily: For 30 days, make one deliberate attempt at connection daily (asking a question, offering help, acknowledging contribution) and respond positively to three attempts from others. Track patterns: what works, what doesn't, who engages, who doesn't. Adjust your approach based on results."
+          },
+          {
+            "id": 4,
+            "text": "Get training on emotion validation: Bring in an external trainer or study resources on validating emotional experiences before moving to solutions. Practice acknowledging feelings as a team. Repeated practice over months rewires automatic responses from defensiveness to validation."
+          }
+        ]
+      },
+      "0-50": {
+        "category": "Gridlock",
+        "recommendations": [
+          {
+            "id": 1,
+            "text": "Find your one safer relationship: Identify the one teammate you feel least negative about. Focus all your initial trust-building effort there. Having one positive relationship provides a foundation for broader improvement. Make targeted efforts: remember what matters to them, respond when they reach out, acknowledge their feelings."
+          },
+          {
+            "id": 2,
+            "text": "Recognize when you're too stressed to engage productively: When team interactions trigger physical stress responses (racing heart, inability to think clearly, overwhelming emotion), recognize you're flooded and need breaks. You cannot build relationships or engage constructively while your nervous system is in crisis mode. Practice calming yourself before re-engaging."
+          },
+          {
+            "id": 3,
+            "text": "Document specific harmful patterns: Track when you experience or observe character attacks (not behavior-focused feedback), disrespect or contempt, excuse-making instead of accountability, or people shutting down and withdrawing. Bring specific examples to your manager or HR. Entrenched patterns require organizational intervention, not just individual effort."
+          },
+          {
+            "id": 4,
+            "text": "Honestly assess if repair is possible: When relationship accounts are deeply overdrawn, evaluate realistically: Are teammates willing to make positive efforts? Is leadership committed to change? When you try to repair, do others engage or reject your attempts? If relationships cannot be rebuilt, protect yourself by requesting a transfer or establishing firm boundaries. Not all situations are fixable."
+          },
+          {
+            "id": 5,
+            "text": "Work with a coach on your personal patterns: Engage a coach or counselor to identify your personal tendencies toward criticism, contempt, defensiveness, or withdrawal. Learn healthier alternatives and practice them with support before applying them in the team context. Individual work accelerates team improvement."
+          },
+          {
+            "id": 6,
+            "text": "Create a 90-day rebuilding plan: Identify three small behaviors you'll practice weekly: one attempt at connection, one validation of someone's feelings, one specific appreciation expressed. Track your efforts and others' responses. Rebuilding requires sustained, consistent effort over months, not days. Small actions accumulate into culture change."
+          }
+        ]
+      },
+      "75-100": {
+        "category": "Recommended Actions - Thriving and Solid",
+        "recommendations": [
+          {
+            "id": 1,
+            "text": "Demonstrate effective connection practices for others: Show other teams how to notice and respond to colleagues' attempts at connection consistently. Share specific examples of how you reached out to teammates and how responses strengthened your relationships. Model the small behaviors that build trust."
+          },
+          {
+            "id": 2,
+            "text": "Mentor others on validating emotions: Your strong relationship foundation gives you credibility. Teach other individuals the process of acknowledging feelings before problem-solving. Share examples of how validating emotions before jumping to solutions strengthened your team relationships."
+          }
+        ]
+      }
+    },
+    "team": {
+      "90-100": {
+        "category": "Thriving Team",
+        "recommendations": [
+          {
+            "id": 1.1,
+            "text": "Document what's working: Take time as a team to identify the specific behaviors and practices that created this high trust. Writing them down helps you maintain these patterns and teaches you what to replicate."
+          },
+          {
+            "id": 2.1,
+            "text": "Make appreciation a regular practice: Create team rituals for recognizing contributions—weekly shoutouts, peer acknowledgment time, or celebration moments. Regular positive interactions prevent trust from eroding over time."
+          },
+          {
+            "id": 3.1,
+            "text": "Use your strong foundation to take risks: Your high trust enables you to tackle challenging projects together. Invest this relational strength in difficult initiatives, supporting other teams, or addressing complex organizational problems. Strong relationships fuel performance."
+          },
+          {
+            "id": 4.1,
+            "text": "Schedule regular check-ins: Plan quarterly team discussions to update each other on current priorities, stress points, and what support each person needs. Prevent trust erosion through consistent maintenance rather than waiting for problems."
+          }
+        ]
+      },
+      "75-90": {
+        "category": "Solid Foundation",
+        "recommendations": [
+          {
+            "id": 1.1,
+            "text": "Map relationship quality across the team: Identify which pairs of teammates have strong working relationships and which seem more distant. Create opportunities for colleagues with weaker connections to interact positively—paired projects, coffee chats, or shared responsibilities."
+          },
+          {
+            "id": 2.1,
+            "text": "Agree on how to handle disagreement before conflict arises: Define as a team what respectful disagreement looks like. What behaviors are okay? What's off-limits? Practice having small disagreements constructively before high-stakes conflicts emerge."
+          },
+          {
+            "id": 3.1,
+            "text": "Target specific improvement areas: Instead of generic team-building, identify which aspects need work—connection, appreciation, how you handle conflict, or responsiveness to each other. Focus efforts where they're most needed for better results."
+          },
+          {
+            "id": 4.1,
+            "text": "Deepen mutual understanding systematically: Dedicate meeting time for teammates to share more about their current work challenges, career goals, or what's creating stress for them. Regularly update your collective knowledge of what matters to each person."
+          }
+        ]
+      },
+      "50-75": {
+        "category": "Trust Erosion",
+        "recommendations": [
+          {
+            "id": 1.1,
+            "text": "Identify destructive patterns and their solutions: Notice where harsh criticism (attacking character instead of addressing behavior), disrespect, defensiveness, or shutting down appear in team interactions. Address each specifically: make complaints behavior-focused, build appreciation culture, practice taking responsibility, take breaks when overwhelmed instead of withdrawing."
+          },
+          {
+            "id": 2.1,
+            "text": "Practice validating emotions as a team norm: Train yourselves to acknowledge feelings before problem-solving. When someone expresses frustration in meetings, pause to validate their experience before jumping to solutions. Consistent practice creates new team habits."
+          },
+          {
+            "id": 3.1,
+            "text": "Build awareness of connection patterns: At the end of meetings, take two minutes to reflect: \"Whose input did we engage with today? Whose did we overlook?\" Making these patterns visible is the first step toward changing them."
+          },
+          {
+            "id": 4.1,
+            "text": "Start meetings with structured appreciation: Use the first 10 minutes of team meetings for recognition or acknowledgment of contributions. Consistency matters more than intensity. Small, frequent positive interactions rebuild depleted relationship accounts over time."
+          },
+          {
+            "id": 3.1,
+            "text": "Create conflict protocols before they're needed: Co-create team agreements about how to handle disagreement. Define what respectful disagreement looks like in specific behaviors. Practice these protocols during minor disagreements to build skills before high-stakes conflicts arise."
+          },
+          {
+            "id": 4.1,
+            "text": "Create a weekly appreciation ritual: Establish a regular practice where each person acknowledges one specific contribution from a teammate. Build a culture of positive relationship deposits through systematic recognition. Consistency over 90 days fundamentally changes team culture."
+          }
+        ]
+      },
+      "0-50": {
+        "category": "Gridlock",
+        "recommendations": [
+          {
+            "id": 1.1,
+            "text": "Bring in outside help for objective observation: Severely damaged team relationships require structured intervention. A third-party facilitator can identify destructive patterns that team members can't see from inside the situation. External support provides neutral ground for repair."
+          },
+          {
+            "id": 2.1,
+            "text": "Create explicit ground rules for difficult conversations: Severely broken trust requires clear agreements before repair can begin: no interrupting, limit tough conversations to 20 minutes, agree to take breaks if anyone becomes overwhelmed, address one issue at a time (not everything at once). Structure creates safety."
+          },
+          {
+            "id": 3.1,
+            "text": "Rebuild basic knowledge of each other: Severely damaged teams have lost fundamental understanding of teammates. Return to basics with structured exercises where each person shares current work challenges, what support they need, and one thing they want colleagues to know. Start with information-gathering, not problem-solving."
+          },
+          {
+            "id": 4.1,
+            "text": "Consider whether restructuring makes more sense than repair: When relationships are universally negative and harmful patterns are deeply entrenched, disbanding or significantly restructuring the team may be more realistic than repair. Assess whether the damage is fixable or whether starting fresh (new members, new leadership, new charter) is more viable."
+          },
+          {
+            "id": 5.1,
+            "text": "Hire a professional mediator or facilitator: Overdrawn relationship accounts and entrenched destructive patterns require skilled intervention. An external facilitator can map harmful patterns, teach healthier alternatives, and structure repair attempts safely. This level of damage requires professional support."
+          },
+          {
+            "id": 6.1,
+            "text": "Reset team agreements from scratch: Return to basics—create explicit written agreements about communication, respect, conflict handling, and accountability. Review them weekly. Hold each other accountable to them. Severely damaged systems require explicit structure until new patterns become automatic through repetition."
+          }
+        ]
+      },
+      "75-100": {
+        "category": "Recommended Actions - Thriving and Solid",
+        "recommendations": [
+          {
+            "id": 1.1,
+            "text": "Teach other teams your knowledge-building practices: Share how your team maintains updated understanding of what matters to each member. Teach others how to build strong working friendships through systematic knowledge of each person's priorities, challenges, and needs."
+          },
+          {
+            "id": 2.1,
+            "text": "Take on a strategically important collaborative project: Your high trust enables productive disagreement and creative risk-taking. Volunteer for organizationally critical initiatives that require deep collaboration. Demonstrate how strong relationships fuel exceptional performance."
+          }
+        ]
+      }
+    }
+  },
+  "scoreGaps": [
+    {
+      "individualRange": "90-100",
+      "teamRange": "0-50",
+      "gapSize": "40+ points",
+      "gapCategory": "Critical Disconnect",
+      "gapMeaning": "You're experiencing thriving trust while your team is in crisis. This represents a severe perception gap that suggests either positional privilege, social isolation from team pain, or significant blind spots about your impact on others.",
+      "primaryCauses": "Positional power shielding you from team dynamics; Strong relationships with select individuals while others suffer; Lack of awareness of your contribution to team dysfunction; Recent arrival to team missing historical context; Identity privilege (majority status)",
+      "keyQuestions": "Who on my team might be experiencing something radically different from me? What power or privilege do I hold that others don't? Am I contributing to patterns I don't see? Who am I not in relationship with on this team?",
+      "recommendations": "Practice radical curiosity with teammates experiencing crisis; Examine your positional and identity privilege explicitly; Ask trusted colleagues for honest feedback about your impact; Commit to listening without defending when others share their pain; Support external intervention even though you feel fine",
+      "riskLevel": "Critical"
+    },
+    {
+      "individualRange": "90-100",
+      "teamRange": "50-75",
+      "gapSize": "25-40 points",
+      "gapCategory": "Significant Disconnect",
+      "gapMeaning": "You're thriving while your team is showing warning signs of the Four Horsemen. Your positive experience may be masking emerging team dysfunction that you're either not seeing or not experiencing directly.",
+      "primaryCauses": "You have strong individual relationships but team cohesion is weak; Your role or position insulates you from conflict; You're unaware of undercurrents affecting others; Different standards for what constitutes \"good enough\"; You're successfully avoiding rather than navigating conflict",
+      "keyQuestions": "What team dynamics am I missing? Are there conflicts happening that don't involve me directly? Who seems quieter or more withdrawn lately? What feedback have I been avoiding or dismissing?",
+      "recommendations": "Use your safety to ask others about their experience; Notice who's not speaking up in meetings and invite their voice; Pay attention to side conversations and nonverbal cues; Advocate for structured team conversations about what's not being said",
+      "riskLevel": "High"
+    },
+    {
+      "individualRange": "90-100",
+      "teamRange": "75-90",
+      "gapSize": "10-24 points",
+      "gapCategory": "Moderate Disconnect",
+      "gapMeaning": "You're at the high end of healthy while your team is in the middle. This smaller gap suggests you may have especially strong relationships, natural optimism, or aren't as affected by the issues others notice.",
+      "primaryCauses": "You have particularly strong connections with certain teammates; You're naturally more positive or forgiving; You're less sensitive to certain interpersonal dynamics; Your role gives you more autonomy or flexibility; You joined recently during a positive period",
+      "keyQuestions": "Am I seeing the full picture of team challenges? Do I have stronger relationships with some than others? What concerns have teammates mentioned that I dismissed as minor?",
+      "recommendations": "Stay connected to team reality by regularly checking in; Don't let your positive experience breed complacency; Continue investing in relationships across the whole team; Support team efforts to move from good to great",
+      "riskLevel": "Low-Moderate"
+    },
+    {
+      "individualRange": "75-90",
+      "teamRange": "0-50",
+      "gapSize": "25+ points",
+      "gapCategory": "Dangerous Blind Spot",
+      "gapMeaning": "You feel the team is functioning reasonably well while others are in crisis. This gap suggests you may be significantly unaware of harm being experienced by teammates, possibly harm you're contributing to.",
+      "primaryCauses": "You're in a position of power and others aren't safe telling you truth; You're conflict-avoidant and missing serious issues; You have strong relationships with leadership but not peers; You're benefiting from systems that harm others; Cultural or communication style differences",
+      "keyQuestions": "Am I safe to give feedback to? Do people tell me the truth or what I want to hear? Who avoids me or seems guarded around me? What complaints have been raised that I've minimized?",
+      "recommendations": "Seek anonymous feedback about your leadership/behavior; Work with a coach to explore blind spots; Create explicit safety for others to share concerns; Examine power dynamics you may be perpetuating; Commit to listening without justifying or explaining",
+      "riskLevel": "Critical"
+    },
+    {
+      "individualRange": "75-90",
+      "teamRange": "50-75",
+      "gapSize": "0-24 points",
+      "gapCategory": "Aligned Experience",
+      "gapMeaning": "Your score and team average are relatively close. You're seeing and experiencing what most of the team experiences. This alignment is healthy even though the absolute scores need improvement.",
+      "primaryCauses": "You're accurately perceiving team dynamics; You're connected to team reality; You're neither overly optimistic nor pessimistic; You have relationships across the team, not just with select people",
+      "keyQuestions": "None - this is healthy alignment. Focus on: How can we collectively improve? What specific behaviors would help us move forward?",
+      "recommendations": "Work with the team on collective improvement; Share your observations about what's working and what isn't; Participate actively in team repair efforts; Model vulnerability about your own growth edges",
+      "riskLevel": "Low"
+    },
+    {
+      "individualRange": "50-75",
+      "teamRange": "0-50",
+      "gapSize": "0-24 points",
+      "gapCategory": "Shared Struggle (You're Slightly More Hopeful)",
+      "gapMeaning": "You're struggling but see some positive signs while others are in deeper crisis. You may have one or two good relationships sustaining you, or you're naturally more hopeful about improvement.",
+      "primaryCauses": "You have at least one solid relationship on the team; You're more optimistic by nature; You've recently had a positive interaction; You're newer and haven't experienced full dysfunction yet; You're more forgiving or patient with the process",
+      "keyQuestions": "What am I holding onto that others have lost hope in? Who has given up that I haven't? What's sustaining my hope that others don't have access to?",
+      "recommendations": "Share your hope without dismissing others' pain; Identify what's working for you and advocate for more of it team-wide; Be honest about your own struggles too; Support those who have less hope than you",
+      "riskLevel": "Moderate-High"
+    },
+    {
+      "individualRange": "50-75",
+      "teamRange": "75-100",
+      "gapSize": "0-24 points",
+      "gapCategory": "Personal Struggle in Healthy Team",
+      "gapMeaning": "The team is generally healthy but you're personally struggling. This inverted gap suggests your individual experience is significantly worse than the collective, possibly due to specific relationships, role challenges, or personal circumstances affecting your perception.",
+      "primaryCauses": "You're in conflict with one or two key people; Your role is unclear or undervalued; You're experiencing microaggressions others don't see; You're dealing with personal issues affecting work perception; You're new and haven't built connections yet; Your work style doesn't match team culture",
+      "keyQuestions": "Why is my experience so different from the team average? Are there specific relationships causing my distress? Do I feel valued and included? Is something about my identity making me experience the team differently?",
+      "recommendations": "Schedule 1:1 conversations with teammates you trust; Talk to your manager about your specific experience; Consider whether role clarity or expectations need attention; Seek support from HR or EAP if experiencing harassment/discrimination; Assess whether this team is the right fit for you",
+      "riskLevel": "Moderate-High"
+    },
+    {
+      "individualRange": "0-50",
+      "teamRange": "50-75",
+      "gapSize": "0-24 points",
+      "gapCategory": "Deeper Pain Than Average",
+      "gapMeaning": "You're in crisis while the team average is in the erosion zone. Your experience is more painful than others', suggesting specific relationships, interactions, or circumstances are affecting you disproportionately.",
+      "primaryCauses": "You're the target of specific behaviors (criticism, contempt); You hold a marginalized identity experiencing microaggressions; You're in conflict with a powerful team member; You lack psychological safety others have; You've experienced betrayal or broken trust; Your needs aren't being met while others' are",
+      "keyQuestions": "Who or what specifically is causing my distress? Do I have any safe relationships on this team? Am I being targeted or scapegoated? Is this environment psychologically safe for me?",
+      "recommendations": "Seek immediate support from manager, HR, or trusted leader; Document specific incidents if you're experiencing harassment; Identify even one person who feels safe; Consider whether staying on this team is viable; Prioritize your wellbeing and mental health; Explore transfer or exit options if appropriate",
+      "riskLevel": "Critical"
+    },
+    {
+      "individualRange": "0-50",
+      "teamRange": "75-100",
+      "gapSize": "25+ points",
+      "gapCategory": "Isolated Suffering",
+      "gapMeaning": "You're in crisis while the team thrives. This extreme inverted gap is a red flag for bullying, exclusion, harassment, or severe role/fit issues. This requires immediate intervention.",
+      "primaryCauses": "You're being actively excluded or bullied; You're experiencing harassment or discrimination; You're scapegoated for team problems; You have unaddressed conflict with leadership; Severe role/culture mismatch; You're new and haven't been welcomed/onboarded; Retaliation for speaking up previously",
+      "keyQuestions": "Am I safe here? Am I being targeted? Have I reported concerns that were ignored? Is someone actively harming me? Do I have any allies?",
+      "recommendations": "Seek immediate support from HR, ombudsperson, or senior leadership; Document all incidents of exclusion, harassment, or mistreatment; Consult with employee assistance program or external therapist; Explore legal protections if discrimination is occurring; Consider medical leave if experiencing trauma symptoms; Develop exit strategy if environment is unsafe",
+      "riskLevel": "Emergency"
+    },
+    {
+      "individualRange": "0-50",
+      "teamRange": "0-50",
+      "gapSize": "0-24 points",
+      "gapCategory": "Shared Crisis",
+      "gapMeaning": "Both you and the team are in crisis. While painful, this alignment means you're seeing reality clearly and the team likely recognizes the severity of the situation. Collective awareness is the first step toward collective repair.",
+      "primaryCauses": "Team has experienced trauma or betrayal; Leadership failure affecting everyone; Major organizational change causing instability; Toxic behavior is pervasive and acknowledged; Long-standing unresolved conflict; Multiple people have left recently",
+      "keyQuestions": "None - this is accurate shared reality. Focus on: Are we committed to repair or is it time to disband/restructure? Do we have the resources and support to heal? Is leadership willing to change?",
+      "recommendations": "Advocate for immediate external intervention (facilitator, mediator, coach); Participate in structured repair if team commits to it; Set clear boundaries to protect your wellbeing; Assess with manager whether team can be saved; Consider transfer if team refuses to address crisis; Support teammates who are also suffering",
+      "riskLevel": "Critical"
+    },
+    {
+      "individualRange": "75-90",
+      "teamRange": "90-100",
+      "gapSize": "0-24 points",
+      "gapCategory": "Room to Grow in Strong Team",
+      "gapMeaning": "The team is thriving but you see room for improvement. This slight gap suggests you have high standards, see growth opportunities others might miss, or are experiencing specific challenges in an otherwise healthy environment.",
+      "primaryCauses": "You have higher expectations for excellence; You see opportunities for growth others don't; You're experiencing a specific challenge (role clarity, workload); You're perfectionist or naturally critical; You recently joined from a higher-performing team; You have expertise showing you what's possible",
+      "keyQuestions": "Am I being overly critical or do I see real opportunities? Are my standards realistic or perfectionist? Is there a specific issue affecting only me?",
+      "recommendations": "Share your vision for excellence with the team; Frame concerns as growth opportunities, not problems; Appreciate what's working while advocating for what's next; Check whether your standards are shared or just personal; Consider whether you're the right fit if gap persists",
+      "riskLevel": "Low"
+    },
+    {
+      "individualRange": "50-75",
+      "teamRange": "90-100",
+      "gapSize": "15+ points",
+      "gapCategory": "Struggling in Excellence",
+      "gapMeaning": "The team is thriving but you're in the erosion zone. This significant inverted gap suggests you're having a fundamentally different experience, possibly due to role challenges, relationship conflicts, or feeling like an outsider in a cohesive team.",
+      "primaryCauses": "You're excluded from the close-knit team culture; Your role is unclear while others' are defined; You have conflict with key teammates who others like; You joined a well-established team and haven't integrated; Cultural or style differences make you feel like an outsider; You have different work values than the team",
+      "keyQuestions": "Why do I feel so disconnected when others feel connected? What's preventing me from experiencing what they experience? Do I want to be part of this team culture or is it not for me?",
+      "recommendations": "Initiate honest conversations with 2-3 teammates about your experience; Ask for clearer role definition and expectations from your manager; Seek to understand team norms and culture explicitly; Assess whether you want to adapt to this culture or find better fit elsewhere; Give it 90 days of genuine effort before deciding to leave",
+      "riskLevel": "Moderate-High"
+    }
+  ],
+  "trustMatrix": {
+    "title": "Team Trust Matrix: Emotional Bank Account × Bids for Connection",
+    "description": "This content is served up to all team reports as a northstar on where the team is and what they want to achieve",
+    "content": [
+      [
+        "Team Trust Matrix: Emotional Bank Account × Bids for Connection",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "** this content is served up to all team reports as a northstar on where the team is what what they want to achieve "
+      ],
+      [
+        "Bids for Connection →",
+        "High Responsiveness<br>Team members consistently turn toward bids — curiosity, validation, responsiveness",
+        "Low Responsiveness<br>Bids often missed, dismissed, or met with defensiveness",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Emotional Bank Account →",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "High Balance",
+        "🌿 Thriving Team",
+        "🧱 Solid Foundation",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Frequent deposits: appreciation, reliability, empathy, celebration",
+        "• Strong psychological safety and creativity.",
+        "• Reliable, functional collaboration but limited emotional depth.",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "• Interactions show warmth, humor, and curiosity.",
+        "• Teams are polite but risk-averse.",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "• 5:1 positive-to-negative ratio maintained.",
+        "Focus: Deepen trust through empathy and transparency.",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "Focus: Sustain rituals of appreciation, learning, and shared purpose.",
+        "Practice: 1:1 trust talks, feedback with appreciation, surfacing missed bids.",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "Practice: Team gratitude circles, curiosity prompts, peer recognition.",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Low Balance",
+        "🌧️ Trust Erosion",
+        "🔒 Gridlock",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Frequent withdrawals: broken promises, avoidance, criticism, emotional neglect",
+        "• Increasing defensiveness, miscommunication, and silence.",
+        "• Blame, avoidance, or open conflict dominate.",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "• Emotional bids often ignored or misread.",
+        "• Psychological safety broken; bids met with resistance.",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "Focus: Repair small ruptures before they harden.",
+        "Focus: Pause and repair before progress.",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "Practice: Gentle start-ups, validation-first listening, shared trust tune-up.",
+        "Practice: Facilitated repair sessions, structured apologies, rebuild reliability through small wins.",
+        "",
+        "",
+        "",
+        ""
+      ]
+    ]
+  },
+  "trustFramework": {
+    "title": "Team Trust Framework 3.0",
+    "description": "Detailed framework for building team trust",
+    "content": [
+      [
+        "Team Trust Framework 3.0",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Framework Element",
+        "Thriving Team 🌿",
+        "Solid Foundation 🧱",
+        "Trust Erosion 🌧️",
+        "Gridlock 🔒"
+      ],
+      [
+        "Team Signs",
+        "Psychological safety, open collaboration, humor, creativity",
+        "Reliable coordination, respect, but limited vulnerability",
+        "Defensive tone, misunderstandings, disengagement",
+        "Blame cycles, avoidance, broken psychological safety"
+      ],
+      [
+        "Emotional Bank Account (EBA)",
+        "Maintain 5:1 positive–negative ratio; frequent appreciation and follow-through",
+        "Add transparency deposits — share motives, context",
+        "Repair withdrawals directly; reaffirm shared values",
+        "Pause execution for trust repair; co-create recovery plan"
+      ],
+      [
+        "Bids for Connection",
+        "Recognize subtle bids and turn toward them with curiosity",
+        "Notice missed bids; follow up later",
+        "Use gentle start-ups and validation",
+        "Respond calmly to micro-bids; use repair attempts"
+      ],
+      [
+        "Emotion Coaching (Gottman)",
+        "Label emotions openly; use empathy to deepen understanding",
+        "Validate feelings before solving; normalize emotion talk",
+        "Listen without fixing; use “I feel” statements",
+        "Regulate before responding; offer empathy even in conflict"
+      ],
+      [
+        "Mind Map (Team Awareness)",
+        "Shared understanding of goals, roles, and emotional climate",
+        "Clarify intentions and stressors; update shared vision",
+        "Identify distorted assumptions; re-map expectations",
+        "Surface gridlocked beliefs; build a new shared narrative"
+      ],
+      [
+        "How to Build Trust (Gottman)",
+        "A = Accountability + Consistency — keep promises, follow through",
+        "Be predictable and transparent; clarify boundaries",
+        "Admit impact, apologize specifically",
+        "Rebuild reliability through consistent small wins"
+      ],
+      [
+        "Recommended Actions",
+        "Keep gratitude rituals, celebrate learning, model turning toward bids",
+        "Move from functional to emotional trust; host 1:1 trust talks",
+        "Conduct “trust tune-up” sessions; practice repair attempts",
+        "Reset team norms; rebuild predictability and consistency"
+      ],
+      [
+        "Goal",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Builds emotional literacy",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Makes invisible emotions visible",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Surfaces missed bids",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Creates accountability",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "Tracks relational health",
+        "",
+        "",
+        "",
+        ""
+      ]
+    ]
+  }
+}

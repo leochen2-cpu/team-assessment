@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './TeamReport.css';
+import RecommendationCard from '../components/RecommendationCard';
+import TrustMatrix from '../components/TrustMatrix';
+import TrustFramework from '../components/TrustFramework';
+import Tabs, { TabItem } from '../components/Tabs';
+import {
+  getTeamRecommendations,
+  getScoreCategory,
+} from '../service/recommendationService';
 
 interface DimensionScores {
   teamConnection: number;
@@ -108,6 +116,65 @@ function TeamReport() {
     { key: 'warningSigns', label: 'Healthy Communication', icon: '💬' },
   ];
 
+  // Get team recommendations based on team score
+  const teamRecommendations = getTeamRecommendations(report.teamScore);
+  const scoreCategory = getScoreCategory(report.teamScore, 'team');
+
+  // ============================================
+  // TAB SYSTEM: Define tab content
+  // ============================================
+  const tabs: TabItem[] = [
+    {
+      id: 'recommendations',
+      label: 'Team Recommendations',
+      content: (
+        <div>
+          <h2 style={{ 
+            fontSize: '1.5rem', 
+            color: '#111827', 
+            marginBottom: '0.5rem',
+            fontWeight: '700'
+          }}>
+            🎯 Team Recommendations
+          </h2>
+          <p style={{ 
+            color: '#6b7280', 
+            fontSize: '0.9375rem', 
+            marginBottom: '1.5rem',
+            lineHeight: '1.6'
+          }}>
+            Based on your team's average score of {report.teamScore.toFixed(1)} ({scoreCategory}), 
+            here are specific actions your team can take to strengthen trust and collaboration:
+          </p>
+          
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+            gap: '1rem' 
+          }}>
+            {teamRecommendations.map((rec) => (
+              <RecommendationCard
+                key={rec.id}
+                number={rec.id}
+                text={rec.text}
+              />
+            ))}
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'trust-matrix',
+      label: 'Trust Matrix',
+      content: <TrustMatrix />
+    },
+    {
+      id: 'trust-framework',
+      label: 'Trust Framework',
+      content: <TrustFramework />
+    }
+  ];
+
   return (
     <div className="report-container">
       <div className="report-content">
@@ -168,6 +235,19 @@ function TeamReport() {
               );
             })}
           </div>
+        </div>
+
+        {/* ============================================
+            TAB SYSTEM: Recommendations, Matrix, Framework
+            ============================================ */}
+        <div style={{ 
+          background: 'white', 
+          borderRadius: '1.5rem', 
+          padding: '2.5rem', 
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+          marginBottom: '2rem'
+        }}>
+          <Tabs tabs={tabs} defaultTab="recommendations" />
         </div>
 
         {/* Actions */}

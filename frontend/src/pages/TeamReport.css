@@ -3,6 +3,7 @@
 .report-container {
   min-height: 100vh;
   padding: 2rem 1rem;
+  background: #f9fafb; /* Light gray background */
 }
 
 .report-content {
@@ -13,6 +14,10 @@
 /* Header */
 .report-header {
   margin-bottom: 2rem;
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .btn-back {
@@ -36,12 +41,12 @@
 .report-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: white;
+  color: #111827; /* ✅ FIXED: Changed from white to dark gray */
   margin-bottom: 0.5rem;
 }
 
 .report-meta {
-  color: rgba(255, 255, 255, 0.9);
+  color: #6b7280; /* ✅ FIXED: Changed from white to gray */
   font-size: 1rem;
 }
 

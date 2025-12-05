@@ -31,7 +31,7 @@ function AssessmentDetail() {
   const [error, setError] = useState<string | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [isSendingEmails, setIsSendingEmails] = useState(false);
-  const [isSendingReminders, setIsSendingReminders] = useState(false); // ⬅️ 新增：提醒邮件状态
+  const [isSendingReminders, setIsSendingReminders] = useState(false);
 
   useEffect(() => {
     // 检查登录状态
@@ -149,7 +149,6 @@ function AssessmentDetail() {
     }
   };
 
-  // ⬇️⬇️⬇️ 新增：发送提醒邮件的处理函数 ⬇️⬇️⬇️
   const handleSendReminders = async () => {
     if (!assessment) return;
 
@@ -209,10 +208,15 @@ function AssessmentDetail() {
       setIsSendingReminders(false);
     }
   };
-  // ⬆️⬆️⬆️ 新增结束 ⬆️⬆️⬆️
 
   const handleViewReport = () => {
     navigate(`/admin/assessment/${id}/report`);
+  };
+
+  // ⭐ NEW: View individual report
+  const handleViewIndividualReport = (code: string) => {
+    // Open in new tab
+    window.open(`/participant/${code}/report`, '_blank');
   };
 
   const handleCopyCode = (code: string) => {
@@ -258,7 +262,10 @@ function AssessmentDetail() {
 
   const completionPercentage = (assessment.submittedCount / assessment.memberCount) * 100;
   const isComplete = assessment.submittedCount === assessment.memberCount;
-  const pendingCount = assessment.memberCount - assessment.submittedCount; // ⬅️ 新增：计算待完成人数
+  const pendingCount = assessment.memberCount - assessment.submittedCount;
+
+  // ⭐ NEW: Filter completed participants (those with submissions)
+  const completedParticipants = assessment.codes.filter(code => code.isUsed);
 
   return (
     <div className="detail-container">
@@ -327,7 +334,7 @@ function AssessmentDetail() {
         </p>
       </div>
 
-      {/* ⬇️⬇️⬇️ 新增：提醒邮件按钮（显示在未完成时） ⬇️⬇️⬇️ */}
+      {/* Send Reminder Emails (when not complete) */}
       {!isComplete && pendingCount > 0 && (
         <div className="actions-section">
           <button 
@@ -369,9 +376,8 @@ function AssessmentDetail() {
           </button>
         </div>
       )}
-      {/* ⬆️⬆️⬆️ 新增结束 ⬆️⬆️⬆️ */}
 
-      {/* Actions */}
+      {/* Actions (when complete) */}
       {isComplete && (
         <div className="actions-section">
           {assessment.teamReport ? (
@@ -409,7 +415,7 @@ function AssessmentDetail() {
                 Sending Emails...
               </>
             ) : (
-              '📧 Send Email Reports'
+              '📧 Send All Reports to Participants'
             )}
           </button>
         </div>
@@ -418,7 +424,15 @@ function AssessmentDetail() {
       {/* Team Report Summary (if exists) */}
       {assessment.teamReport && (
         <div className="report-section">
-          <h2>📈 Team Report Summary</h2>
+          {/* ✅ FIX: 深色字体，白色背景清晰可见 */}
+          <h2 style={{ 
+            color: '#111827',
+            fontSize: '1.5rem',
+            fontWeight: '600',
+            marginBottom: '1rem'
+          }}>
+            📈 Team Report Summary
+          </h2>
           <div className="report-card">
             <div className="report-header">
               <div className="report-score">
@@ -464,9 +478,99 @@ function AssessmentDetail() {
         </div>
       )}
 
+      {/* ============================================
+          ⭐ NEW SECTION: Individual Reports
+          ============================================ */}
+      {completedParticipants.length > 0 && (
+        <div className="codes-section">
+          {/* ✅ FIX: 深色字体，白色背景清晰可见 */}
+          <h2 style={{ 
+            color: '#111827',
+            fontSize: '1.5rem',
+            fontWeight: '600',
+            marginBottom: '1rem'
+          }}>
+            👤 Individual Reports
+          </h2>
+          <div className="codes-table">
+            {/* ✅ FIX: Custom grid layout for better spacing */}
+            <div 
+              className="table-header"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '200px 1fr 180px 150px',
+                gap: '0.75rem',
+                padding: '0.875rem 1.25rem',
+              }}
+            >
+              <div>Participant Name</div>
+              <div>Email</div>
+              <div style={{ textAlign: 'right' }}>Submitted At</div>
+              <div style={{ textAlign: 'right' }}>View Report</div>
+            </div>
+
+            {completedParticipants.map((participant) => (
+              <div 
+                key={participant.id} 
+                className="table-row row-used"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '200px 1fr 180px 150px',
+                  gap: '0.75rem',
+                  padding: '0.875rem 1.25rem',
+                }}
+              >
+                <div className="td-participant" style={{ display: 'block' }}>
+                  {participant.name || <span className="text-muted">Anonymous</span>}
+                </div>
+                <div className="td-email" style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {participant.email || <span className="text-muted">No email</span>}
+                </div>
+                <div className="td-submitted" style={{ display: 'block', textAlign: 'right' }}>
+                  {participant.submittedAt ? (
+                    formatDate(participant.submittedAt)
+                  ) : (
+                    <span className="text-muted">-</span>
+                  )}
+                </div>
+                <div className="td-action" style={{ display: 'block', textAlign: 'right' }}>
+                  <button 
+                    onClick={() => handleViewIndividualReport(participant.code)}
+                    className="btn-view-report"
+                    style={{
+                      background: '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '0.375rem',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      transition: 'all 0.2s',
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.background = '#2563eb'}
+                    onMouseOut={(e) => e.currentTarget.style.background = '#3b82f6'}
+                  >
+                    📄 View Report
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Codes List */}
       <div className="codes-section">
-        <h2>🔑 Access Codes</h2>
+        {/* ✅ FIX: 深色字体，白色背景清晰可见 */}
+        <h2 style={{ 
+          color: '#111827',
+          fontSize: '1.5rem',
+          fontWeight: '600',
+          marginBottom: '1rem'
+        }}>
+          🔑 Access Codes
+        </h2>
         <div className="codes-table">
           <div className="table-header">
             <div className="th-code">Code</div>

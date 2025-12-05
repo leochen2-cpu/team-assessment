@@ -89,10 +89,10 @@ export function calculatePersonalScore(
  * 根据分数获取等级
  */
 export function getScoreGrade(score: number): string {
-  if (score >= 85) return '优秀';
-  if (score >= 70) return '良好';
-  if (score >= 55) return '需改进';
-  return '警戒';
+  if (score >= 85) return 'Excellent';
+  if (score >= 70) return 'Good';
+  if (score >= 55) return 'Needs improvement';
+  return 'Alert';
 }
 
 /**
@@ -100,13 +100,13 @@ export function getScoreGrade(score: number): string {
  */
 export function identifyStrengths(dimensionScores: DimensionScores): string[] {
   const dimensionNames: { [key: string]: string } = {
-    teamConnection: '团队联结',
-    appreciation: '认可与欣赏',
-    responsiveness: '积极回应',
-    trustPositivity: '信任与正向',
-    conflictManagement: '冲突管理',
-    goalSupport: '目标支持',
-    warningSigns: '健康沟通',
+    teamConnection: 'Team Connection',
+    appreciation: 'Appreiciation',
+    responsiveness: 'Responsiveness',
+    trustPositivity: 'Trust and Positivitiy',
+    conflictManagement: 'Conflict Management',
+    goalSupport: 'Goal Support',
+    warningSigns: 'Healthy Communication',
   };
 
   const strengths: string[] = [];

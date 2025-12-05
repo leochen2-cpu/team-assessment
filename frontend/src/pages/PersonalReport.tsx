@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './PersonalReport.css';
 import RadarChart from '../components/RadarChart';
+import RecommendationCard from '../components/RecommendationCard';
+import ScoreGapAnalysis from '../components/ScoreGapAnalysis';
+import Tabs, { TabItem } from '../components/Tabs';
+import {
+  getIndividualRecommendations,
+  getScoreCategory,
+  getScoreGapInsight,
+} from '../service/recommendationService';
 
 interface DimensionComparison {
   personal: number;
@@ -109,6 +117,100 @@ function PersonalReport() {
     { key: 'conflictManagement', label: 'Conflict Management', icon: '⚖️' },
     { key: 'goalSupport', label: 'Goal Support', icon: '🎯' },
     { key: 'warningSigns', label: 'Healthy Communication', icon: '💬' },
+  ];
+
+  // Get personalized recommendations based on score
+  const personalizedRecommendations = getIndividualRecommendations(report.personalScore);
+  const scoreCategory = getScoreCategory(report.personalScore, 'individual');
+  
+  // Get score gap insight
+  const gapInsight = getScoreGapInsight(report.personalScore, report.teamScore);
+
+  // ============================================
+  // TAB SYSTEM: Define tab content
+  // ============================================
+  const tabs: TabItem[] = [
+    {
+      id: 'recommendations',
+      label: 'Recommendations',
+      content: (
+        <div>
+          <h3 style={{ 
+            fontSize: '1.5rem', 
+            color: '#111827', 
+            marginBottom: '0.5rem',
+            fontWeight: '700'
+          }}>
+            💡 Personalized Recommendations
+          </h3>
+          <p style={{ 
+            color: '#6b7280', 
+            fontSize: '0.9375rem', 
+            marginBottom: '1.5rem',
+            lineHeight: '1.6'
+          }}>
+            Based on your score of {report.personalScore.toFixed(1)} ({scoreCategory}), 
+            here are specific actions tailored to help you strengthen your team relationships:
+          </p>
+          
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+            gap: '1rem' 
+          }}>
+            {personalizedRecommendations.map((rec) => (
+              <RecommendationCard
+                key={rec.id}
+                number={rec.id}
+                text={rec.text}
+              />
+            ))}
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'gap-analysis',
+      label: 'Score Gap Analysis',
+      content: (
+        <div>
+          <h3 style={{ 
+            fontSize: '1.5rem', 
+            color: '#111827', 
+            marginBottom: '0.5rem',
+            fontWeight: '700'
+          }}>
+            🔍 Your Perception vs Team Reality
+          </h3>
+          <p style={{ 
+            color: '#6b7280', 
+            fontSize: '0.9375rem', 
+            marginBottom: '1.5rem',
+            lineHeight: '1.6'
+          }}>
+            Understanding the gap between your experience and the team average provides 
+            important insights into your team dynamics and your role within the team.
+          </p>
+          
+          {gapInsight ? (
+            <ScoreGapAnalysis
+              insight={gapInsight}
+              individualScore={report.personalScore}
+              teamScore={report.teamScore}
+            />
+          ) : (
+            <div style={{ 
+              padding: '2rem', 
+              textAlign: 'center', 
+              background: '#f9fafb',
+              borderRadius: '0.5rem'
+            }}>
+              <p style={{ color: '#6b7280' }}>No gap analysis available.</p>
+            </div>
+          )}
+        </div>
+      )
+    }
   ];
 
   return (
@@ -236,17 +338,17 @@ function PersonalReport() {
           </div>
         </div>
 
-        {/* Recommendations */}
-        <div className="recommendations-section">
-          <h3>💡 Personalized Action Recommendations</h3>
-          <div className="recommendations-grid">
-            {report.recommendations.map((rec, index) => (
-              <div key={index} className="recommendation-item">
-                <span className="rec-number">{index + 1}</span>
-                <span className="rec-text">{rec}</span>
-              </div>
-            ))}
-          </div>
+        {/* ============================================
+            TAB SYSTEM: Recommendations & Gap Analysis
+            ============================================ */}
+        <div style={{ 
+          background: 'white', 
+          borderRadius: '1.5rem', 
+          padding: '2.5rem', 
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+          marginBottom: '2rem'
+        }}>
+          <Tabs tabs={tabs} defaultTab="recommendations" />
         </div>
 
         {/* Footer */}
