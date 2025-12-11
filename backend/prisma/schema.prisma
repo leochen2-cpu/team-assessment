@@ -56,6 +56,9 @@ model TeamReport {
   participationCount Int        // 参与人数
   createdAt          DateTime   @default(now())
   assessment         Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  teamPosition              String?  // JSON: 团队位置数据
+  priorityAreas             String?  // JSON: 优先改进领域数组
+  personalizedRecommendations String?  // JSON: 个性化推荐
 }
 
 // ============================================

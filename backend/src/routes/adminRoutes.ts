@@ -1,3 +1,4 @@
+import { generatePersonalizationData } from '../utils/personalization';
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import {
@@ -328,6 +329,18 @@ router.post('/assessments/:id/calculate', async (req, res) => {
       avgDimensions[key] = Math.round((avgDimensions[key] / count) * 10) / 10;
     }
 
+    // ============================================
+    // 🆕 新增：生成个性化数据
+    // ============================================
+    const personalizationData = generatePersonalizationData(avgDimensions);
+
+    console.log('✅ Personalization data generated:', {
+      quadrant: personalizationData.teamPosition.quadrant,
+      ebaScore: personalizationData.teamPosition.ebaScore,
+      bidsScore: personalizationData.teamPosition.bidsScore,
+      priorityCount: personalizationData.priorityAreas.length
+    });
+
     // 保存或更新团队报告
     const teamReport = await prisma.teamReport.upsert({
       where: { assessmentId: assessment.id },
@@ -339,6 +352,10 @@ router.post('/assessments/:id/calculate', async (req, res) => {
         standardDeviation: teamScoreResult.standardDeviation,
         dimensionScores: JSON.stringify(avgDimensions),
         participationCount: count,
+        // 🆕 新增字段
+        teamPosition: JSON.stringify(personalizationData.teamPosition),
+        priorityAreas: JSON.stringify(personalizationData.priorityAreas),
+        personalizedRecommendations: JSON.stringify(personalizationData.recommendations),
       },
       create: {
         assessmentId: assessment.id,
@@ -349,6 +366,10 @@ router.post('/assessments/:id/calculate', async (req, res) => {
         standardDeviation: teamScoreResult.standardDeviation,
         dimensionScores: JSON.stringify(avgDimensions),
         participationCount: count,
+        // 🆕 新增字段
+        teamPosition: JSON.stringify(personalizationData.teamPosition),
+        priorityAreas: JSON.stringify(personalizationData.priorityAreas),
+        personalizedRecommendations: JSON.stringify(personalizationData.recommendations),
       },
     });
 
@@ -358,6 +379,10 @@ router.post('/assessments/:id/calculate', async (req, res) => {
         ...teamReport,
         dimensionScores: avgDimensions,
         healthGrade: getTeamHealthGrade(teamReport.teamScore),
+        // 🆕 返回个性化数据（已解析）
+        teamPosition: personalizationData.teamPosition,
+        priorityAreas: personalizationData.priorityAreas,
+        personalizedRecommendations: personalizationData.recommendations,
       },
     });
   } catch (error: any) {
